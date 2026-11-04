@@ -41,24 +41,20 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-container">
-      <ul class="nav-tabs">
-        <li><button class="nav-tab-btn active" data-view="hero"><span>🚀</span> 3D Orbit</button></li>
-        <li><button class="nav-tab-btn" data-view="dashboard"><span>📊</span> Mission Dashboard</button></li>
-        <li><button class="nav-tab-btn" data-view="osdr"><span>🔬</span> NASA Research</button></li>
-        <li><button class="nav-tab-btn" data-view="ntrs"><span>📚</span> NTRS Library</button></li>
-        <li><button class="nav-tab-btn" data-view="telemetry"><span>📡</span> Live Telemetry</button></li>
-        <li><button class="nav-tab-btn" data-view="digital-twin"><span>🧬</span> Digital Twin</button></li>
-        <li><button class="nav-tab-btn" data-view="astra-ai"><span>🤖</span> AI Health Analytics</button></li>
-        <li><button class="nav-tab-btn" data-view="mars-sim"><span>🔴</span> Mission Simulator</button></li>
-        <li><button class="nav-tab-btn" data-view="provenance"><span>🛡️</span> Data Provenance</button></li>
-        <li><button class="nav-tab-btn" data-view="wearables"><span>⌚</span> Wearables</button></li>
-        <li><button class="nav-tab-btn" data-view="space-weather"><span>☀️</span> Space Weather</button></li>
-        <li><button class="nav-tab-btn" data-view="mental-wellness"><span>🧠</span> Wellness</button></li>
-        <li><button class="nav-tab-btn" data-view="mission-control"><span>🛰️</span> Wall Display</button></li>
-      </ul>
-    </nav>
+    <!-- Interactive Slide-Over Menu Trigger (☰ Modules) -->
+    <div class="nav-hamburger-container">
+      <button id="btn-nav-hamburger" class="btn-hamburger-trigger" aria-label="Open Navigation Modules Menu" title="Open Mission Modules Drawer">
+        <span class="hamburger-icon-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+        <span class="hamburger-text font-heading">MODULES</span>
+        <span id="header-active-module-pill" class="header-active-module-pill font-mono">
+          <span>🚀</span> 3D Orbit
+        </span>
+      </button>
+    </div>
 
     <!-- Header Actions & Mission Clock -->
     <div class="header-actions">
@@ -86,6 +82,199 @@
       </button>
     </div>
   </header>
+
+  <!-- ==============================================================================
+       INTERACTIVE SLIDE-OVER NAVIGATION DRAWER (HAMBURGER MENU)
+       ============================================================================== -->
+  <div id="nav-drawer-backdrop" class="nav-drawer-backdrop" aria-hidden="true"></div>
+
+  <aside id="nav-slide-drawer" class="nav-slide-drawer cyber-corners" aria-label="Mission Navigation Drawer">
+    <!-- Drawer Header -->
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <span class="drawer-brand-icon">🛰️</span>
+        <div>
+          <h3 class="drawer-title font-heading">Mission Modules</h3>
+          <span class="drawer-subtitle font-mono">ASTRAVITAL OS • SYSTEM NAVIGATION</span>
+        </div>
+      </div>
+      <button id="btn-close-drawer" class="btn-close-drawer" aria-label="Close Navigation Menu" title="Close Menu (Esc)">
+        ✕
+      </button>
+    </div>
+
+    <!-- Quick Search Filter -->
+    <div class="drawer-search-wrap">
+      <span class="drawer-search-icon">🔍</span>
+      <input type="text" id="drawer-module-search" class="drawer-search-input" placeholder="Search mission modules..." autocomplete="off" />
+      <button id="btn-clear-drawer-search" class="btn-clear-search" style="display:none;" title="Clear search">✕</button>
+    </div>
+
+    <!-- Drawer Navigation Links Grouped -->
+    <div class="drawer-nav-content" id="drawer-nav-content">
+      
+      <!-- Group 1: Core Operations -->
+      <div class="drawer-group" data-group="operations">
+        <div class="drawer-group-title font-mono">
+          <span>CORE OPERATIONS</span>
+          <span class="group-count">4</span>
+        </div>
+        <ul class="drawer-menu-list">
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn active" data-view="hero">
+              <span class="nav-icon">🚀</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">3D Orbit Explorer</span>
+                <span class="nav-desc">Orbital celestial Earth & Mars telemetry</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="dashboard">
+              <span class="nav-icon">📊</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Mission Dashboard</span>
+                <span class="nav-desc">Primary biometric flight deck & vitals</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="mission-control">
+              <span class="nav-icon">🛰️</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Mission Control Wall</span>
+                <span class="nav-desc">Fleet-wide status & telemetry alerts</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="mars-sim">
+              <span class="nav-icon">🔴</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Mars Mission Simulator</span>
+                <span class="nav-desc">Long-duration health degradation sandbox</span>
+              </div>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Group 2: Biometrics & Clinical AI -->
+      <div class="drawer-group" data-group="biometrics">
+        <div class="drawer-group-title font-mono">
+          <span>BIOMETRICS & CLINICAL AI</span>
+          <span class="group-count">5</span>
+        </div>
+        <ul class="drawer-menu-list">
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="digital-twin">
+              <span class="nav-icon">🧬</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Astronaut Digital Twin</span>
+                <span class="nav-desc">3D physiological model & organ stress</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="telemetry">
+              <span class="nav-icon">📡</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Live Telemetry & Exercise</span>
+                <span class="nav-desc">10-param ECG, CEVIS & ARED simulator</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="astra-ai">
+              <span class="nav-icon">🤖</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">AI Health Analytics</span>
+                <span class="nav-desc">Multi-astronaut crew triage & clinical chat</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="wearables">
+              <span class="nav-icon">⌚</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Wearable Sensor Sync</span>
+                <span class="nav-desc">Smart patch, hexoskin & bio-harness</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="mental-wellness">
+              <span class="nav-icon">🧠</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Mental Wellness & Focus</span>
+                <span class="nav-desc">Psychological balance & reaction latency</span>
+              </div>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Group 3: NASA Research & Data -->
+      <div class="drawer-group" data-group="research">
+        <div class="drawer-group-title font-mono">
+          <span>NASA RESEARCH & DATA</span>
+          <span class="group-count">4</span>
+        </div>
+        <ul class="drawer-menu-list">
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="osdr">
+              <span class="nav-icon">🔬</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">NASA Research Explorer</span>
+                <span class="nav-desc">OSDR & GeneLab spaceflight datasets</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="ntrs">
+              <span class="nav-icon">📚</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">NASA NTRS Library</span>
+                <span class="nav-desc">Technical reports & NASA-STD-3001</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="provenance">
+              <span class="nav-icon">🛡️</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Data Provenance Registry</span>
+                <span class="nav-desc">Authentic NASA vs simulated telemetry</span>
+              </div>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab-btn drawer-nav-btn" data-view="space-weather">
+              <span class="nav-icon">☀️</span>
+              <div class="nav-btn-text">
+                <span class="nav-label">Space Weather & APOD</span>
+                <span class="nav-desc">NASA DONKI solar flares & daily imagery</span>
+              </div>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Search No Results state -->
+      <div id="drawer-no-results" class="drawer-no-results font-mono" style="display:none;">
+        <span style="font-size:1.5rem; display:block; margin-bottom:0.5rem;">🔍</span>
+        No mission modules match your query.
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="drawer-footer font-mono">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.72rem; color:#8E9DB8;">AstraVital OS v4.2 • Sol 142</span>
+        <span style="color:var(--success-green); font-size:0.72rem;">● SYSTEM ONLINE</span>
+      </div>
+    </div>
+  </aside>
 
   <!-- ==============================================================================
        MAIN APPLICATION CONTAINER

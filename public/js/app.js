@@ -124,6 +124,8 @@ class AstraVitalApp {
   }
 
   initNavigation() {
+    this.initDrawerNavigation();
+
     document.querySelectorAll('.nav-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const view = btn.dataset.view;
@@ -154,6 +156,99 @@ class AstraVitalApp {
     });
   }
 
+  initDrawerNavigation() {
+    const hamburgerBtn = document.getElementById('btn-nav-hamburger');
+    const drawer = document.getElementById('nav-slide-drawer');
+    const backdrop = document.getElementById('nav-drawer-backdrop');
+    const closeBtn = document.getElementById('btn-close-drawer');
+    const searchInput = document.getElementById('drawer-module-search');
+    const clearSearchBtn = document.getElementById('btn-clear-drawer-search');
+
+    const openDrawer = () => {
+      if (drawer && backdrop) {
+        drawer.classList.add('open');
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if (searchInput) {
+          setTimeout(() => searchInput.focus(), 150);
+        }
+        if (window.soundEngine) window.soundEngine.playTelemetryBeep(1100, 0.04);
+      }
+    };
+
+    const closeDrawer = () => {
+      if (drawer && backdrop) {
+        drawer.classList.remove('open');
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    };
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer && drawer.classList.contains('open')) {
+        closeDrawer();
+      }
+    });
+
+    // Auto-close drawer smoothly when user selects a module
+    document.querySelectorAll('.drawer-nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setTimeout(closeDrawer, 150);
+      });
+    });
+
+    // Instant Search Filter for modules
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        if (clearSearchBtn) clearSearchBtn.style.display = term ? 'block' : 'none';
+
+        const groups = document.querySelectorAll('.drawer-group');
+        let totalVisible = 0;
+
+        groups.forEach(group => {
+          const items = group.querySelectorAll('.drawer-menu-list li');
+          let groupVisibleCount = 0;
+
+          items.forEach(item => {
+            const btn = item.querySelector('.drawer-nav-btn');
+            const text = (btn ? btn.innerText : '').toLowerCase();
+            const view = (btn ? btn.dataset.view : '').toLowerCase();
+
+            if (!term || text.includes(term) || view.includes(term)) {
+              item.style.display = '';
+              groupVisibleCount++;
+              totalVisible++;
+            } else {
+              item.style.display = 'none';
+            }
+          });
+
+          group.style.display = groupVisibleCount > 0 ? '' : 'none';
+        });
+
+        const noResults = document.getElementById('drawer-no-results');
+        if (noResults) {
+          noResults.style.display = totalVisible === 0 ? 'block' : 'none';
+        }
+      });
+    }
+
+    if (clearSearchBtn && searchInput) {
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.focus();
+      });
+    }
+  }
+
   switchView(viewName) {
     if (this.currentView === viewName) return;
     this.currentView = viewName;
@@ -166,6 +261,17 @@ class AstraVitalApp {
     document.querySelectorAll('.nav-tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.view === viewName);
     });
+
+    // Update active module pill in header
+    const activePill = document.getElementById('header-active-module-pill');
+    if (activePill) {
+      const activeBtn = document.querySelector(`.drawer-nav-btn[data-view="${viewName}"]`);
+      if (activeBtn) {
+        const icon = activeBtn.querySelector('.nav-icon');
+        const label = activeBtn.querySelector('.nav-label');
+        activePill.innerHTML = `<span>${icon ? icon.innerText : '🛰️'}</span> ${label ? label.innerText : viewName}`;
+      }
+    }
 
     // Hide all view sections, show targeted section
     document.querySelectorAll('.view-section').forEach(sec => {
