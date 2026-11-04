@@ -1557,7 +1557,7 @@
   <!-- Emergency Red Alert Confirmation Modal -->
   <div id="emergency-modal" class="modal-backdrop">
     <div class="glass-panel modal-dialog cyber-corners" style="border: 2px solid var(--danger-red); box-shadow: 0 0 50px var(--danger-red-glow);">
-      <button class="modal-close-btn" onclick="window.missionControl.closeEmergencyModal()">✕</button>
+      <button class="modal-close-btn" onclick="if(window.missionControl){window.missionControl.closeEmergencyModal();}else{document.getElementById('emergency-modal').classList.remove('active');}">✕</button>
 
       <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;">
         <span style="font-size:2rem;">🚨</span>
@@ -1580,7 +1580,7 @@
       </div>
 
       <div style="display:flex; justify-content:flex-end; gap:1rem;">
-        <button class="btn-secondary" onclick="window.missionControl.closeEmergencyModal()">
+        <button class="btn-secondary" onclick="if(window.missionControl){window.missionControl.closeEmergencyModal();}else{document.getElementById('emergency-modal').classList.remove('active');}">
           Cancel
         </button>
         <button id="btn-emergency-confirm-trigger" class="btn-primary" style="background:var(--danger-red); box-shadow: 0 0 25px var(--danger-red-glow);">

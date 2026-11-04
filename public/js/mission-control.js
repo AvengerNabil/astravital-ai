@@ -5,6 +5,7 @@
 
 class MissionControlWall {
   constructor() {
+    window.missionControl = this;
     this.alertsList = [];
     this.activeEmergency = null;
     this.initEventListeners();
@@ -26,6 +27,26 @@ class MissionControlWall {
     if (confirmTriggerBtn) {
       confirmTriggerBtn.addEventListener('click', () => this.executeEmergencyProtocol());
     }
+
+    // Modal close and cancel listeners
+    const modal = document.getElementById('emergency-modal');
+    if (modal) {
+      const closeBtn = modal.querySelector('.modal-close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.closeEmergencyModal());
+      }
+      const cancelBtn = modal.querySelector('.btn-secondary');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => this.closeEmergencyModal());
+      }
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) this.closeEmergencyModal();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.closeEmergencyModal();
+    });
   }
 
   async fetchAlerts() {

@@ -87,6 +87,7 @@ class AstraVitalApp {
     // Initialize Mission Control Wall
     if (window.MissionControlWall) {
       this.missionControl = new MissionControlWall();
+      window.missionControl = this.missionControl;
     }
 
     // Initialize NASA Center (Space Weather & APOD)
