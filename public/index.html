@@ -936,124 +936,299 @@
     <section id="view-astra-ai" class="view-section">
       <div class="section-header">
         <div class="section-title-wrap">
-          <h2><span>🤖</span> Astra AI Clinical Decision Support Engine</h2>
-          <p>Flight surgeon intelligent assistant equipped with NASA human research protocols, voice synthesis, and risk forecasting.</p>
+          <h2><span>🤖</span> AI Health Analytics & Crew Clinical Intelligence</h2>
+          <p>Multi-astronaut autonomous health monitoring, crew-wide triage, and flight surgeon clinical decision support engine informed by NASA OSDR & NTRS publications.</p>
         </div>
         <div class="section-actions" style="display:flex; align-items:center; gap:0.75rem;">
           <span class="badge-derived-analytics">DERIVED ANALYTICAL DATA</span>
-          <span style="font-family:'Share Tech Mono'; font-size:0.8rem; color:var(--success-green);">● INFERENCE MODEL ONLINE</span>
+          <span class="badge-nasa-authentic" style="font-size:0.75rem;">NASA-STD-3001 MODEL</span>
+          <span style="font-family:'Share Tech Mono'; font-size:0.8rem; color:var(--success-green);">● INFERENCE ENGINE ONLINE</span>
         </div>
       </div>
 
-      <div class="astra-ai-layout">
-        <!-- Chat Console -->
-        <div class="glass-panel chat-container cyber-corners">
-          <div class="chat-header">
+      <!-- TOP: Dynamic Crew Summary Statistics Bar -->
+      <div class="glass-panel cyber-corners" style="padding:1rem 1.25rem; margin-bottom:1.5rem; background:rgba(7, 13, 31, 0.75);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:0.5rem;">
+          <span style="font-family:'Orbitron'; font-size:0.85rem; color:var(--accent-cyan); letter-spacing:0.06em;">FLEET CREW HEALTH SUMMARY</span>
+          <span style="font-family:'Share Tech Mono'; font-size:0.75rem; color:#8E9DB8;">REAL-TIME TELEMETRY SYNCHRONIZATION</span>
+        </div>
+        <div class="crew-summary-stats-grid" id="ai-crew-summary-stats">
+          <div class="stat-pill-card">
+            <span class="stat-pill-label">TOTAL CREW</span>
+            <span class="stat-pill-val" id="stat-crew-total">4</span>
+          </div>
+          <div class="stat-pill-card stat-pill-normal">
+            <span class="stat-pill-label">NORMAL</span>
+            <span class="stat-pill-val" id="stat-crew-normal">--</span>
+          </div>
+          <div class="stat-pill-card stat-pill-attention">
+            <span class="stat-pill-label">ATTENTION REQUIRED</span>
+            <span class="stat-pill-val" id="stat-crew-attention">--</span>
+          </div>
+          <div class="stat-pill-card stat-pill-elevated">
+            <span class="stat-pill-label">ELEVATED RISK</span>
+            <span class="stat-pill-val" id="stat-crew-elevated">--</span>
+          </div>
+          <div class="stat-pill-card stat-pill-critical">
+            <span class="stat-pill-label">CRITICAL ALERTS</span>
+            <span class="stat-pill-val" id="stat-crew-critical">--</span>
+          </div>
+          <div class="stat-pill-card stat-pill-insufficient">
+            <span class="stat-pill-label">INSUFFICIENT DATA</span>
+            <span class="stat-pill-val" id="stat-crew-insufficient">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-Navigation Inside AI Health Analytics Tab -->
+      <div class="ai-analytics-subnav" style="display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <button class="ai-subnav-btn active" data-subview="crew-overview" id="btn-subnav-crew">
+          <span>👥</span> Crew Health Overview
+        </button>
+        <button class="ai-subnav-btn" data-subview="individual-analysis" id="btn-subnav-individual">
+          <span>👤</span> Individual Health Analysis
+        </button>
+        <button class="ai-subnav-btn" data-subview="ai-chat" id="btn-subnav-ai">
+          <span>🧠</span> AI Crew Intelligence
+        </button>
+        <button class="ai-subnav-btn" data-subview="unified-view" id="btn-subnav-unified">
+          <span>⊞</span> Unified Multi-Panel
+        </button>
+      </div>
+
+      <!-- MAIN CONTAINER FOR THE THREE SECTIONS -->
+      <div id="ai-tab-content-container">
+
+        <!-- ====================================================================
+             SECTION A: CREW HEALTH OVERVIEW
+             ==================================================================== -->
+        <div id="panel-crew-overview" class="ai-subpanel active">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h3 style="font-family:'Rajdhani'; font-size:1.25rem; font-weight:700; color:#FFFFFF; margin-bottom:0.2rem;">
+                ARES-IV & ARTEMIS MISSION CREW TELEMETRY
+              </h3>
+              <p style="font-size:0.82rem; color:#8E9DB8;">
+                Select any crew member to view comprehensive individual health analysis, digital twin organ coupling, and targeted AI clinical assessments.
+              </p>
+            </div>
+            <span style="font-family:'Share Tech Mono'; font-size:0.75rem; color:var(--accent-cyan); background:rgba(0,229,255,0.08); padding:0.3rem 0.75rem; border-radius:4px; border:1px solid var(--border-cyan);">
+              CLICK CARD TO INSPECT ASTRONAUT
+            </span>
+          </div>
+
+          <!-- Crew Member Cards Grid -->
+          <div class="crew-cards-grid" id="ai-crew-cards-container">
+            <!-- Dynamically populated by astra-ai.js -->
+            <div style="color:#8E9DB8; font-family:'Share Tech Mono'; padding:2rem; text-align:center;">
+              Synchronizing crew telemetry data...
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             SECTION B: INDIVIDUAL HEALTH ANALYSIS
+             ==================================================================== -->
+        <div id="panel-individual-analysis" class="ai-subpanel" style="display:none;">
+          <!-- Individual Astronaut Selector Strip -->
+          <div class="glass-panel cyber-corners" style="padding:0.75rem 1.25rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem;">
             <div style="display:flex; align-items:center; gap:0.75rem;">
-              <span style="font-size:1.3rem;">🧠</span>
+              <span style="font-family:'Orbitron'; font-size:0.8rem; color:var(--accent-cyan);">ACTIVE PATIENT:</span>
+              <div class="astronaut-quick-pills" id="ai-individual-astronaut-pills">
+                <!-- Injected by astra-ai.js -->
+              </div>
+            </div>
+            <button id="btn-consult-ai-individual" class="btn-primary" style="padding:0.45rem 1rem; font-size:0.8rem;">
+              ⚡ Consult AI About This Astronaut
+            </button>
+          </div>
+
+          <!-- Individual Health Dossier Layout -->
+          <div class="individual-dossier-layout">
+            <!-- Left Column: Patient Profile & Physiological Telemetry -->
+            <div class="glass-panel cyber-corners" style="padding:1.25rem;">
+              <div id="ai-individual-profile-header">
+                <!-- Injected dynamically -->
+              </div>
+
+              <h4 style="font-family:'Rajdhani'; font-size:1.05rem; font-weight:700; color:var(--accent-cyan); margin:1.25rem 0 0.75rem 0; border-bottom:1px solid var(--border-subtle); padding-bottom:0.4rem;">
+                CURRENT PHYSIOLOGICAL TELEMETRY
+              </h4>
+              <div class="vitals-dossier-grid" id="ai-individual-vitals-grid">
+                <!-- Injected dynamically -->
+              </div>
+
+              <h4 style="font-family:'Rajdhani'; font-size:1.05rem; font-weight:700; color:var(--accent-cyan); margin:1.25rem 0 0.75rem 0; border-bottom:1px solid var(--border-subtle); padding-bottom:0.4rem;">
+                DIGITAL TWIN ORGAN STRESS COUPLING
+              </h4>
+              <div id="ai-individual-organ-stress">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Right Column: Interactive Trend Charts & Clinical Assessment -->
+            <div class="glass-panel cyber-corners" style="padding:1.25rem; display:flex; flex-direction:column; gap:1.25rem;">
               <div>
-                <strong style="color:var(--accent-cyan);">Astra Clinical Intelligence v4.2</strong>
-                <div style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">
-                  Citation Model: NASA SP-20205009772 & NASA-STD-3001
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                  <h4 style="font-family:'Rajdhani'; font-size:1.05rem; font-weight:700; color:var(--accent-cyan); margin:0;">
+                    CARDIOVASCULAR & OXYGENATION TRENDS
+                  </h4>
+                  <span style="font-family:'Share Tech Mono'; font-size:0.72rem; color:#8E9DB8;">NASA-STD-3001 SAFE ZONES</span>
+                </div>
+                <!-- Interactive Charts Canvas / SVG Container -->
+                <div class="trend-charts-wrapper" id="ai-trend-charts-container">
+                  <!-- Injected dynamically: Heart Rate & SpO2 Sparkline Trends -->
                 </div>
               </div>
-            </div>
-            <div class="chat-actions">
-              <button id="btn-ai-voice-toggle" class="voice-btn" title="Toggle AI Voice Synthesis">
-                🔊 Audio On
-              </button>
-            </div>
-          </div>
 
-          <div id="ai-chat-messages" class="chat-messages">
-            <div class="chat-msg msg-ai">
-              <div class="msg-avatar">🤖</div>
-              <div class="msg-bubble">
-                Greetings Flight Surgeon. I am Astra AI. I am actively synchronizing telemetry from Ares IV and Artemis fleets against authentic NASA OSDR biological datasets and NTRS clinical standards. How can I assist with crew health diagnosis or countermeasure planning today?
+              <!-- AI Clinical Diagnosis & Evaluation Box -->
+              <div class="clinical-assessment-box" id="ai-individual-assessment-box">
+                <!-- Injected dynamically -->
+              </div>
+
+              <!-- Research Citations & Countermeasures -->
+              <div class="clinical-countermeasures-box" id="ai-individual-countermeasures-box">
+                <!-- Injected dynamically -->
               </div>
             </div>
-          </div>
-
-          <!-- Quick Query Suggestions -->
-          <div class="quick-prompts-tray">
-            <button class="quick-prompt-pill" onclick="window.astraAI.sendQuickPrompt('Evaluate Dr. Thorne for SANS optic disc edema')">
-              Evaluate Dr. Thorne for SANS
-            </button>
-            <button class="quick-prompt-pill" onclick="window.astraAI.sendQuickPrompt('What are bone mineral loss countermeasures from NASA NTRS?')">
-              Bone Loss Countermeasures
-            </button>
-            <button class="quick-prompt-pill" onclick="window.astraAI.sendQuickPrompt('Assess Solar Flare SPE radiation risk for Mars transit')">
-              Solar Flare SPE Risk
-            </button>
-          </div>
-
-          <!-- Input Bar -->
-          <div class="chat-input-bar">
-            <input type="text" id="ai-chat-input" placeholder="Query clinical protocols, SANS guidelines, countermeasure dosages, or space weather..." />
-            <button id="btn-speech-mic" class="mic-btn" title="Speak to Astra AI">
-              🎤
-            </button>
-            <button id="btn-chat-send" class="btn-primary" style="padding:0.6rem 1.4rem;">
-              Send
-            </button>
           </div>
         </div>
 
-        <!-- Diagnostic Advisory & Predictive Radar -->
-        <div class="glass-panel clinical-sidebar cyber-corners">
-          <h3 style="font-size:1.1rem; margin-bottom:1rem; color:var(--accent-cyan);">
-            Active Clinical Diagnostic Ticket
-          </h3>
-
-          <div id="ai-clinical-summary-box" style="background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:8px; padding:1.2rem; margin-bottom:1.25rem;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.6rem;">
-              <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">PATIENT</span>
-              <strong style="color:#FFFFFF;">Dr. Marcus Thorne (Atlas)</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.6rem;">
-              <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">TRIAGE STATUS</span>
-              <span class="crew-badge-score score-badge-amber">ELEVATED WORKLOAD</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.6rem;">
-              <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">DIAGNOSTIC CONFIDENCE</span>
-              <span style="color:var(--accent-cyan); font-family:'Share Tech Mono'; font-weight:bold;">94.2%</span>
-            </div>
-            <div style="font-size:0.85rem; color:#E2E8F0; line-height:1.45; border-top:1px solid var(--border-subtle); padding-top:0.75rem;">
-              Sub-acute cardiovascular deconditioning with resting tachycardia (86 bpm) and pre-hypertensive shift (134/88 mmHg). Correlates with microgravity vascular remodeling & post-EVA dehydration.
-            </div>
-          </div>
-
-          <h4 style="font-size:0.9rem; color:#8E9DB8; text-transform:uppercase; margin-bottom:0.6rem; font-family:'Share Tech Mono';">
-            Prescribed Space Countermeasures
-          </h4>
-          <ul id="ai-countermeasure-list" class="countermeasure-list">
-            <li>
-              <span>🏋️</span>
-              <div>
-                <strong>ARED High-Resistance Deadlift</strong>
-                <p>200kg load, 4 sets x 8 reps for axial bone preservation.</p>
+        <!-- ====================================================================
+             SECTION C: AI CREW INTELLIGENCE (CHAT INTERFACE)
+             ==================================================================== -->
+        <div id="panel-ai-chat" class="ai-subpanel" style="display:none;">
+          <div class="astra-ai-layout">
+            <!-- Chat Console -->
+            <div class="glass-panel chat-container cyber-corners">
+              <div class="chat-header">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <span style="font-size:1.3rem;">🧠</span>
+                  <div>
+                    <strong style="color:var(--accent-cyan);">Astra Clinical Intelligence v4.2</strong>
+                    <div style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">
+                      Trained on NASA SP-20205009772 & NASA-STD-3001
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-actions" style="display:flex; gap:0.5rem; align-items:center;">
+                  <button id="btn-clear-chat" class="voice-btn" style="width:auto; padding:0.25rem 0.6rem; font-size:0.75rem; border-color:var(--border-subtle); color:#8E9DB8;" title="Clear Conversation">
+                    🗑️ Clear
+                  </button>
+                  <button id="btn-ai-voice-toggle" class="voice-btn" title="Toggle AI Voice Synthesis">
+                    🔊 Audio On
+                  </button>
+                </div>
               </div>
-            </li>
-            <li>
-              <span>🚴</span>
-              <div>
-                <strong>CEVIS Cycle Ergometer + LBNP</strong>
-                <p>35 min at 75% VO2 max with -25 mmHg lower body negative pressure.</p>
-              </div>
-            </li>
-            <li>
-              <span>💧</span>
-              <div>
-                <strong>Electrolyte Plasma Expansion</strong>
-                <p>1.2L isotonic sodium chloride solution before dynamic maneuvers.</p>
-              </div>
-            </li>
-          </ul>
 
-          <div style="margin-top:1rem; padding:0.65rem; background:rgba(0,0,0,0.25); border-radius:6px; font-size:0.72rem; color:#8E9DB8;">
-            DISCLAIMER: Astra AI provides decision support simulation based on NASA publications. Does not replace certified medical officer consultation.
+              <!-- Chat Messages Container -->
+              <div id="ai-chat-messages" class="chat-messages-area">
+                <div class="chat-bubble bubble-astra">
+                  <p style="margin-bottom:0.5rem;">
+                    Greetings Flight Surgeon. I am <strong>Astra Clinical Intelligence</strong>. I continuously analyze simulated telemetry across our entire 4-astronaut mission crew against authentic <strong>NASA OSDR</strong> studies (OSD-205, OSD-379, OSD-120) and <strong>NASA-STD-3001</strong> medical standards.
+                  </p>
+                  <p style="font-size:0.84rem; color:#C2D1E5; margin:0;">
+                    You can ask me questions about <strong>individual astronauts</strong> (e.g., <em>"Analyze Dr. Marcus Thorne's cardiac indicators"</em>) or <strong>crew-wide comparative questions</strong> (e.g., <em>"Analyze the health of the entire crew"</em> or <em>"Which astronaut currently has the highest risk?"</em>).
+                  </p>
+                </div>
+              </div>
+
+              <!-- Quick Query Suggestions (Both Individual & Crew-wide) -->
+              <div class="quick-prompts-tray">
+                <div style="display:flex; gap:0.4rem; overflow-x:auto; padding-bottom:0.25rem;">
+                  <button class="quick-prompt-pill" data-prompt="Analyze the health of the entire crew">
+                    👥 Analyze Entire Crew
+                  </button>
+                  <button class="quick-prompt-pill" data-prompt="Which astronaut currently has the highest risk indicators?">
+                    🚨 Highest Risk Crew Member?
+                  </button>
+                  <button class="quick-prompt-pill" data-prompt="Compare the health status of all astronauts">
+                    ⚖️ Compare All Astronauts
+                  </button>
+                  <button class="quick-prompt-pill" data-prompt="Evaluate Dr. Marcus Thorne for cardiovascular deconditioning">
+                    🫀 Evaluate Dr. Thorne (Cardiac)
+                  </button>
+                  <button class="quick-prompt-pill" data-prompt="What are bone mineral loss countermeasures from NASA NTRS?">
+                    🦴 Bone Loss Countermeasures
+                  </button>
+                  <button class="quick-prompt-pill" data-prompt="Assess Solar Flare SPE radiation risk for Mars transit">
+                    ☀️ Radiation SPE Assessment
+                  </button>
+                </div>
+              </div>
+
+              <!-- Input Bar -->
+              <div class="chat-input-bar">
+                <input type="text" id="ai-chat-input" class="chat-input" placeholder="Ask about an individual astronaut or entire crew health..." autocomplete="off" />
+                <button id="btn-speech-mic" class="chat-voice-btn" title="Speak to Astra AI">
+                  🎤
+                </button>
+                <button id="btn-chat-send" class="chat-send-btn" title="Send Query">
+                  ➤
+                </button>
+              </div>
+            </div>
+
+            <!-- Diagnostic Advisory & Predictive Radar Sidebar -->
+            <div class="glass-panel clinical-sidebar cyber-corners">
+              <h3 style="font-size:1.1rem; margin-bottom:0.75rem; color:var(--accent-cyan); display:flex; justify-content:space-between; align-items:center;">
+                <span>Active Clinical Ticket</span>
+                <span id="ai-ticket-mode-badge" style="font-size:0.7rem; font-family:'Share Tech Mono'; color:var(--accent-cyan); border:1px solid var(--border-cyan); padding:0.15rem 0.5rem; border-radius:4px;">CREW CONTEXT</span>
+              </h3>
+
+              <div id="ai-clinical-summary-box" style="background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:8px; padding:1.1rem; margin-bottom:1.1rem;">
+                <!-- Updated dynamically by astra-ai.js -->
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                  <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">MONITORED TARGET</span>
+                  <strong id="ai-ticket-patient-name" style="color:#FFFFFF;">All Active Crew (4)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                  <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">TRIAGE PRIORITY</span>
+                  <span id="ai-ticket-triage-badge" class="crew-badge-score score-badge-amber">TRIAGE ACTIVE</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                  <span style="font-size:0.75rem; color:#8E9DB8; font-family:'Share Tech Mono';">AI CONFIDENCE</span>
+                  <span id="ai-ticket-confidence" style="color:var(--accent-cyan); font-family:'Share Tech Mono'; font-weight:bold;">95.6%</span>
+                </div>
+                <div id="ai-ticket-details" style="font-size:0.85rem; color:#E2E8F0; line-height:1.45; border-top:1px solid var(--border-subtle); padding-top:0.65rem;">
+                  Astra AI is synchronizing 10 physiological telemetry streams across the mission fleet. Select an astronaut or send a query to produce an evidence-based diagnostic evaluation.
+                </div>
+              </div>
+
+              <h4 style="font-size:0.85rem; color:#8E9DB8; text-transform:uppercase; margin-bottom:0.6rem; font-family:'Share Tech Mono';">
+                Prescribed Spaceflight Countermeasures
+              </h4>
+              <ul id="ai-countermeasure-list" class="countermeasure-list">
+                <li>
+                  <span>🏋️</span>
+                  <div>
+                    <strong>ARED High-Resistance Deadlift</strong>
+                    <p>200kg load, 4 sets x 8 reps for axial bone preservation (NASA/TP-2015-218575).</p>
+                  </div>
+                </li>
+                <li>
+                  <span>🚴</span>
+                  <div>
+                    <strong>CEVIS Cycle Ergometer + LBNP</strong>
+                    <p>35 min at 75% VO2 max with -25 mmHg lower body negative pressure (OSD-205).</p>
+                  </div>
+                </li>
+                <li>
+                  <span>💧</span>
+                  <div>
+                    <strong>Electrolyte Plasma Expansion</strong>
+                    <p>1.2L isotonic sodium chloride solution before dynamic maneuvers.</p>
+                  </div>
+                </li>
+              </ul>
+
+              <div style="margin-top:1rem; padding:0.65rem; background:rgba(0,0,0,0.3); border-radius:6px; font-size:0.72rem; color:#8E9DB8; line-height:1.4; border-left:2px solid var(--warning-amber);">
+                <strong style="color:var(--warning-amber);">SAFETY NOTICE:</strong> Research & clinical decision-support prototype. Telemetry is synthesized for demonstration. Does not replace certified NASA flight surgeon diagnosis.
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </section>
 

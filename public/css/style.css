@@ -1128,6 +1128,248 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--accent-cyan);
 }
 
+/* ==============================================================================
+   AI HEALTH ANALYTICS: THREE-SECTION MULTI-ASTRONAUT SUITE
+   ============================================================================== */
+.crew-summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-pill-card {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transition: var(--hud-transition);
+}
+
+.stat-pill-card:hover {
+  border-color: var(--accent-cyan);
+}
+
+.stat-pill-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #8E9DB8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stat-pill-val {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.stat-pill-normal .stat-pill-val { color: #00FF99; }
+.stat-pill-attention .stat-pill-val { color: #FFB800; }
+.stat-pill-elevated .stat-pill-val { color: #FF8A00; }
+.stat-pill-critical .stat-pill-val { color: #FF4D6D; }
+.stat-pill-insufficient .stat-pill-val { color: #8E9DB8; }
+
+.ai-analytics-subnav {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.ai-subnav-btn {
+  background: rgba(17, 24, 39, 0.75);
+  border: 1px solid var(--border-subtle);
+  color: #8E9DB8;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: var(--hud-transition);
+}
+
+.ai-subnav-btn:hover {
+  color: var(--text-main);
+  border-color: var(--accent-cyan);
+}
+
+.ai-subnav-btn.active {
+  background: rgba(0, 229, 255, 0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+/* SECTION A: CREW CARDS */
+.crew-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.25rem;
+}
+
+.astronaut-crew-card {
+  background: rgba(11, 19, 43, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.astronaut-crew-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.15);
+}
+
+.astronaut-crew-card.active-selected {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.25);
+}
+
+.crew-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.75rem;
+}
+
+.crew-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-cyan);
+}
+
+.crew-card-vitals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.crew-vital-item {
+  background: rgba(5, 8, 22, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+}
+
+.crew-vital-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #8E9DB8;
+  display: block;
+}
+
+.crew-vital-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* SECTION B: INDIVIDUAL DOSSIER */
+.individual-dossier-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 1.5rem;
+}
+
+.astronaut-quick-pills {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.ast-pill-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: #C2D1E5;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--hud-transition);
+}
+
+.ast-pill-btn:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.ast-pill-btn.active {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: bold;
+}
+
+.vitals-dossier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.65rem;
+}
+
+.trend-charts-wrapper {
+  background: rgba(5, 8, 22, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.trend-chart-box {
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.sparkline-svg {
+  width: 100%;
+  height: 60px;
+  overflow: visible;
+}
+
+.clinical-assessment-box {
+  background: rgba(17, 24, 39, 0.85);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 0 8px 8px 0;
+  padding: 1.1rem;
+}
+
+.clinical-countermeasures-box {
+  background: rgba(5, 8, 22, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .individual-dossier-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* MARS MISSION SIMULATOR */
 .mars-sim-grid {
   display: grid;

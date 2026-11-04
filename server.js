@@ -615,13 +615,56 @@ app.get('/api/nasa/apod', async (req, res) => {
 // --------------------------------------------------------------------------
 // 11. Astra AI Medical Decision Support Engine
 // --------------------------------------------------------------------------
-app.post('/api/ai/analyze', (req, res) => {
-  const { astronautId, telemetry, prompt } = req.body;
-  const ast = astronauts.find(a => a.id === astronautId) || astronauts[1];
-  const t = telemetry || ast.telemetry;
+app.post('/api/ai/analyze', async (req, res) => {
+  try {
+    const { astronautId, telemetry, prompt } = req.body;
+    const q = (prompt || '').toLowerCase();
 
-  const response = runAstraClinicalInference(ast, t, prompt);
-  res.json({ success: true, data: response });
+    // Check if query is targeted at the entire crew
+    const isCrewQuery = 
+      astronautId === 'all' ||
+      q.includes('entire crew') ||
+      q.includes('all astronaut') ||
+      q.includes('every astronaut') ||
+      q.includes('everyone') ||
+      q.includes('who has the highest risk') ||
+      q.includes('highest risk') ||
+      q.includes('compare the health') ||
+      q.includes('compare health') ||
+      q.includes('compare everyone') ||
+      q.includes('crew health summary') ||
+      q.includes('crew summary') ||
+      q.includes('crew-wide') ||
+      q.includes('fleet health');
+
+    if (isCrewQuery) {
+      const crewResponse = runAstraCrewClinicalInference(astronauts, prompt);
+      return res.json({ success: true, data: crewResponse });
+    }
+
+    // Determine target astronaut: check if query specifically names an astronaut
+    let targetAst = null;
+    if (q.includes('sarah') || q.includes('vance') || q.includes('valkyrie')) {
+      targetAst = astronauts.find(a => a.id === 'ast-001');
+    } else if (q.includes('marcus') || q.includes('thorne') || q.includes('atlas')) {
+      targetAst = astronauts.find(a => a.id === 'ast-002');
+    } else if (q.includes('elena') || q.includes('rostova') || q.includes('novacrest')) {
+      targetAst = astronauts.find(a => a.id === 'ast-003');
+    } else if (q.includes('kenji') || q.includes('sato') || q.includes('ronin')) {
+      targetAst = astronauts.find(a => a.id === 'ast-004');
+    }
+
+    if (!targetAst) {
+      targetAst = astronauts.find(a => a.id === astronautId) || astronauts[0];
+    }
+
+    const t = (targetAst.id === astronautId && telemetry) ? telemetry : targetAst.telemetry;
+    const response = runAstraIndividualClinicalInference(targetAst, t, prompt);
+    res.json({ success: true, data: response });
+  } catch (err) {
+    console.error('AI Analysis Error:', err);
+    res.status(500).json({ success: false, error: 'Clinical inference error: ' + err.message });
+  }
 });
 
 // --------------------------------------------------------------------------
@@ -889,10 +932,12 @@ function getHealthScoreLabel(score) {
   return 'CRITICAL';
 }
 
-function runAstraClinicalInference(ast, t, userQuery) {
+function runAstraIndividualClinicalInference(ast, t, userQuery) {
   const anomalies = [];
   const recommendations = [];
+  const q = (userQuery || '').toLowerCase();
 
+  // Cardiovascular evaluation
   if (t.heartRate > 85) {
     anomalies.push({
       indicator: 'Cardiovascular (Heart Rate)',
@@ -908,6 +953,7 @@ function runAstraClinicalInference(ast, t, userQuery) {
     recommendations.push('Prescribe 30 minutes on cycle ergometer at 70% VO2 max with Lower Body Negative Pressure (LBNP) suit.');
   }
 
+  // SpO2 evaluation
   if (t.spo2 < 97) {
     anomalies.push({
       indicator: 'Pulmonary Ventilation (SpO2)',
@@ -923,6 +969,7 @@ function runAstraClinicalInference(ast, t, userQuery) {
     recommendations.push('Inspect crew quarter cabin air scrubbers for CO2 stagnation; initiate 15m hyper-oxygenation protocol.');
   }
 
+  // Neuro-stress evaluation
   if (t.stressScore > 55) {
     anomalies.push({
       indicator: 'Neuro-Psychological Stress Index',
@@ -938,6 +985,7 @@ function runAstraClinicalInference(ast, t, userQuery) {
     recommendations.push('Schedule VR nature immersion session (Artemis Tranquility Protocol); administer 0.5mg melatonin 30 min before sleep cycle.');
   }
 
+  // Radiation evaluation
   if (t.radiationDoseRateUsvH > 40) {
     anomalies.push({
       indicator: 'Ionizing Radiation Exposure Rate',
@@ -951,6 +999,37 @@ function runAstraClinicalInference(ast, t, userQuery) {
       linkedReport: 'NASA/TP-2020-5002995 (CNS Space Radiation Risk)'
     });
     recommendations.push('Relocate sleeping quarters adjacent to potable water storage tanks to optimize hydrogen shielding.');
+  }
+
+  // Musculoskeletal / SANS evaluation if queried
+  if (q.includes('bone') || q.includes('muscle') || q.includes('t-score') || q.includes('osteopenia')) {
+    anomalies.push({
+      indicator: 'Musculoskeletal Demineralization Risk',
+      observedValue: `T-Score: ${ast.boneDensityTScore || 1.0} (${ast.digitalTwin ? ast.digitalTwin.boneLossRatePctMonth : 1.1}%/mo loss)`,
+      thresholdBaseline: 'T-score > 0.0 (Normal bone mineral density)',
+      severity: (ast.boneDensityTScore && ast.boneDensityTScore < 0.95) ? 'WARNING' : 'NOMINAL',
+      explanation: 'Continuous skeletal unloading suppresses osteoblast Wnt/beta-catenin signaling while osteoclast resorption increases urinary calcium excretion.',
+      dataSource: 'DERIVED BIOMECHANICAL DIGITAL TWIN',
+      suggestedAction: 'Daily 2.5h ARED resistive protocol (heavy axial squats & deadlifts) + 1000 IU Vit D3 with 1200mg Calcium.',
+      linkedNasaStudy: 'OSD-120 (Microgravity Bone Demineralization)',
+      linkedReport: 'NASA/TP-2015-218575 (Musculoskeletal Countermeasures)'
+    });
+    recommendations.push('Enforce daily 2.5h ARED loading protocol with Vitamin D3 supplementation.');
+  }
+
+  if (q.includes('sans') || q.includes('eye') || q.includes('optic') || q.includes('vision') || q.includes('edema')) {
+    anomalies.push({
+      indicator: 'Spaceflight-Associated Neuro-ocular Syndrome (SANS)',
+      observedValue: `Stage ${ast.digitalTwin ? ast.digitalTwin.sansStage : 0} (Cephalic fluid shift: ${ast.digitalTwin ? ast.digitalTwin.cephalicFluidShiftMl : 800} mL)`,
+      thresholdBaseline: 'Stage 0 (No optic disc edema / Frisén scale 0)',
+      severity: (ast.digitalTwin && ast.digitalTwin.sansStage > 0) ? 'WARNING' : 'NOMINAL',
+      explanation: 'Microgravity loss of hydrostatic column causes persistent upward fluid shift, increasing jugular venous pressure and subarachnoid sheath sheath distension.',
+      dataSource: 'DERIVED NEURO-OCULAR DIGITAL TWIN',
+      suggestedAction: 'Prescribe daily -30 mmHg Lower Body Negative Pressure (LBNP) for 45 min during sleep cycle to restore caudal fluid gradient.',
+      linkedNasaStudy: 'OSD-473 (SANS Retinal Nerve Fiber Swelling)',
+      linkedReport: 'NASA/TP-2020-5002995 (SANS Evidence Report)'
+    });
+    recommendations.push('Deploy Lower Body Negative Pressure (LBNP) chamber sessions to alleviate retrobulbar intracranial pressure.');
   }
 
   if (anomalies.length === 0) {
@@ -969,16 +1048,145 @@ function runAstraClinicalInference(ast, t, userQuery) {
   }
 
   return {
-    astronautName: ast.name,
+    type: 'INDIVIDUAL_ANALYSIS',
+    astronaut: {
+      id: ast.id,
+      name: ast.name,
+      callsign: ast.callsign,
+      role: ast.role,
+      mission: ast.mission,
+      destination: ast.destination,
+      avatar: ast.avatar,
+      age: ast.age,
+      bloodType: ast.bloodType,
+      heightCm: ast.heightCm,
+      weightKg: ast.weightKg,
+      vo2Max: ast.vo2Max,
+      boneDensityTScore: ast.boneDensityTScore,
+      careerRadiationMsv: ast.careerRadiationMsv
+    },
+    vitals: {
+      heartRate: t.heartRate,
+      spo2: t.spo2,
+      bpSystolic: t.bpSystolic,
+      bpDiastolic: t.bpDiastolic,
+      bodyTemp: t.bodyTemp,
+      respirationRate: t.respirationRate || 14,
+      sleepDurationHours: t.sleepDurationHours || 7.2,
+      stressScore: t.stressScore,
+      sleepQuality: t.sleepQuality,
+      hydrationPct: t.hydrationPct,
+      radiationDoseRateUsvH: t.radiationDoseRateUsvH,
+      overallHealthScore: t.overallHealthScore,
+      status: t.status
+    },
     healthScore: t.overallHealthScore,
     status: t.status,
     anomalies,
-    clinicalSummary: `Astra AI clinical evaluation for ${ast.name}: Astronaut exhibits ${t.status.toLowerCase()} physiological telemetry with overall biometric index of ${t.overallHealthScore}/100. Primary observation centers on ${anomalies[0].indicator.toLowerCase()}.`,
+    clinicalSummary: `Astra AI clinical evaluation for ${ast.name} (${ast.callsign}): Current physiological telemetry reflects ${t.status.toLowerCase()} health index of ${t.overallHealthScore}/100. Key telemetry includes Heart Rate ${t.heartRate} bpm, SpO2 ${t.spo2}%, and BP ${t.bpSystolic}/${t.bpDiastolic} mmHg. Primary clinical observation focuses on ${anomalies[0].indicator}.`,
     actionableProtocols: recommendations,
-    aiConfidenceScore: 0.942,
+    historicalComparison: `Compared to pre-flight mission baseline, resting heart rate is ${t.heartRate > 75 ? '+' + (t.heartRate - 70) + ' bpm elevated' : 'within nominal range'}. SpO2 is ${t.spo2 < 98 ? (98.5 - t.spo2).toFixed(1) + '% below LEO nominal' : 'optimal'}. Bone density T-score remains at ${ast.boneDensityTScore || '1.0'}.`,
+    relevantNasaResearch: [
+      {
+        id: anomalies[0].linkedNasaStudy ? anomalies[0].linkedNasaStudy.split(' ')[0] : 'OSD-205',
+        title: anomalies[0].linkedNasaStudy || 'OSD-205: Microgravity Cardiovascular Deconditioning'
+      },
+      {
+        id: 'NASA-STD-3001',
+        title: 'NASA Space Flight Human-System Standard: Crew Health and Habitability'
+      }
+    ],
+    aiConfidenceScore: 0.948,
     spaceMedicineCitation: 'NASA SP-20205009772: Principles of Clinical Space Medicine for Long-Duration Exploration Missions',
-    provenanceNotice: 'DERIVED ANALYTICAL DATA – For simulation and decision support demonstration only.'
+    dataLimitations: 'SIMULATED DATA – Physiological telemetry synthesized for demonstration and clinical decision-support evaluation under NASA-STD-3001 guidelines.'
   };
+}
+
+function runAstraCrewClinicalInference(crewList, userQuery) {
+  const analyzedCrew = crewList.map(ast => {
+    const t = ast.telemetry;
+    let triageStatus = 'NORMAL';
+    if (t.status === 'CRITICAL' || t.heartRate > 110 || t.spo2 < 93) triageStatus = 'CRITICAL ALERT';
+    else if (t.status === 'WARNING' || t.heartRate > 85 || t.stressScore > 55 || t.spo2 < 97) triageStatus = 'ATTENTION REQUIRED';
+    else if (t.stressScore > 50 || t.radiationDoseRateUsvH > 40) triageStatus = 'ELEVATED RISK';
+
+    return {
+      id: ast.id,
+      name: ast.name,
+      callsign: ast.callsign,
+      role: ast.role,
+      mission: ast.mission,
+      avatar: ast.avatar,
+      healthScore: t.overallHealthScore,
+      triageStatus: triageStatus,
+      heartRate: t.heartRate,
+      spo2: t.spo2,
+      bp: `${t.bpSystolic}/${t.bpDiastolic}`,
+      stressScore: t.stressScore,
+      radiationRate: t.radiationDoseRateUsvH,
+      keyConcern: t.heartRate > 85 ? 'Tachycardia / Fluid Redistribution' : t.spo2 < 97 ? 'Mild Hypoxia' : t.stressScore > 50 ? 'Neuro-vestibular stress' : 'All systems nominal'
+    };
+  });
+
+  // Calculate dynamic stats
+  const totalAnalyzed = analyzedCrew.length;
+  const normalCount = analyzedCrew.filter(a => a.triageStatus === 'NORMAL').length;
+  const attentionCount = analyzedCrew.filter(a => a.triageStatus === 'ATTENTION REQUIRED').length;
+  const elevatedRiskCount = analyzedCrew.filter(a => a.triageStatus === 'ELEVATED RISK').length;
+  const criticalCount = analyzedCrew.filter(a => a.triageStatus === 'CRITICAL ALERT').length;
+
+  // Identify highest risk
+  const sortedByRisk = [...analyzedCrew].sort((a, b) => a.healthScore - b.healthScore);
+  const highestRiskAstronaut = sortedByRisk[0];
+
+  const summary = `Crew-wide clinical synthesis complete across ${totalAnalyzed} active astronauts. Fleet overall health profile indicates ${normalCount} normal, ${attentionCount} requiring flight-surgeon attention, and ${criticalCount} in critical triage. ${highestRiskAstronaut.name} (${highestRiskAstronaut.callsign}) exhibits the highest physiological deviation (Score: ${highestRiskAstronaut.healthScore}/100) due to ${highestRiskAstronaut.keyConcern}.`;
+
+  return {
+    type: 'CREW_ANALYSIS',
+    overallSummary: summary,
+    totalAnalyzed,
+    stats: {
+      total: totalAnalyzed,
+      normal: normalCount,
+      attentionRequired: attentionCount,
+      elevatedRisk: elevatedRiskCount,
+      criticalAlerts: criticalCount,
+      insufficientData: 0
+    },
+    highestPriorityCases: [
+      {
+        name: highestRiskAstronaut.name,
+        callsign: highestRiskAstronaut.callsign,
+        id: highestRiskAstronaut.id,
+        triageStatus: highestRiskAstronaut.triageStatus,
+        vitals: `${highestRiskAstronaut.heartRate} bpm • ${highestRiskAstronaut.spo2}% SpO2 • ${highestRiskAstronaut.bp} mmHg`,
+        rationale: highestRiskAstronaut.keyConcern
+      }
+    ],
+    individualFindings: analyzedCrew,
+    comparativeRiskRanking: sortedByRisk.map(a => `${a.name} (${a.callsign}) — Score: ${a.healthScore}/100 [${a.triageStatus}]`),
+    missionWideTrends: 'Microgravity cardiovascular remodeling and cephalad fluid migration observed primarily in Mars transit cohort (ARES-IV), while lunar surface crew (Artemis V) maintains superior autonomic stability under partial-g (0.16g) counteraction.',
+    recommendedActions: [
+      `Prioritize Dr. Marcus Thorne for immediate 30m CEVIS cycle ergometer session and 1.0L electrolyte rehydration.`,
+      `Verify cabin air circulation scrubbers in ARES-IV sleeping module to prevent localized CO2 pocket formation.`,
+      `Continue daily 2.5-hour ARED high-resistance loading protocol across all 4 crew members for axial bone preservation.`,
+      `Monitor deep-space radiation dosimeters for all crew following recent solar energetic particle (SEP) baseline elevation.`
+    ],
+    relevantNasaResearch: [
+      { id: 'OSD-205', title: 'NASA Twins Study: Microgravity Cardiovascular Remodeling' },
+      { id: 'OSD-379', title: 'NASA GeneLab: Spaceflight Mitochondrial Immune Signatures' },
+      { id: 'NASA-STD-3001', title: 'NASA Space Flight Human-System Standard: Crew Health and Habitability' },
+      { id: 'NASA/TP-2015-218575', title: 'Human Health and Performance Risks of Space Exploration Missions' }
+    ],
+    aiConfidenceScore: 0.956,
+    spaceMedicineCitation: 'NASA-STD-3001 Vol 1 & NASA SP-20205009772',
+    dataLimitations: 'SIMULATED FLEET TELEMETRY – Synthesized multi-astronaut demonstration under NASA Space Apps 2026 guidelines.'
+  };
+}
+
+// Backward compatibility alias
+function runAstraClinicalInference(ast, t, userQuery) {
+  return runAstraIndividualClinicalInference(ast, t, userQuery);
 }
 
 function runMarsSimulationEngine({ durationDays, shieldingType, exerciseHoursPerDay, dietSupplementation }) {

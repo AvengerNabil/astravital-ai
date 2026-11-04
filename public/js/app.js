@@ -205,6 +205,10 @@ class AstraVitalApp {
       this.provenanceManager.renderDictionaryTable();
     }
 
+    if (viewName === 'astra-ai' && this.astraAI) {
+      this.astraAI.loadCrewData();
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
