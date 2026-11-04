@@ -1,6 +1,7 @@
 // ==============================================================================
 // AstraVital AI - Main Express Backend Server
 // NASA Space Apps Challenge 2026
+// Upgraded with Authentic NASA OSDR, GeneLab, & NTRS Research Data Integrations
 // ==============================================================================
 
 const express = require('express');
@@ -8,6 +9,12 @@ const cors = require('cors');
 const path = require('path');
 const https = require('https');
 require('dotenv').config();
+
+const {
+  OSDR_STUDIES,
+  NTRS_PUBLICATIONS,
+  DATA_PROVENANCE_REGISTRY
+} = require('./nasa-research-data');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +24,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// In-Memory Real-time State (initialized from rich NASA spaceflight baseline)
+// Simulation Engine State
+const simulationState = {
+  isPaused: false,
+  seed: 1337,
+  scenario: 'nominal', // 'nominal' | 'warning' | 'critical'
+  scenarioStartTime: null,
+  tickCount: 0,
+  speed: 1.0
+};
+
+// Historical Telemetry Ring Buffer (stores last 120 ticks for multi-parameter trend analysis)
+const telemetryHistoryBuffer = [];
+const MAX_HISTORY_POINTS = 120;
+
+// In-Memory Real-time State (initialized from NASA spaceflight baseline)
 let astronauts = [
   {
     id: 'ast-001',
@@ -41,12 +62,23 @@ let astronauts = [
       bpDiastolic: 76,
       bodyTemp: 36.8,
       respirationRate: 14,
+      sleepDurationHours: 7.6,
+      physicalActivity: {
+        status: 'READY',
+        type: 'ARED_RESISTIVE',
+        reps: 45,
+        durationSec: 1800,
+        caloriesKcal: 210,
+        dailyTargetMins: 150
+      },
       stressScore: 24,
       sleepQuality: 88,
       hydrationPct: 94.2,
       radiationDoseRateUsvH: 42.5,
       overallHealthScore: 94,
-      status: 'EXCELLENT'
+      status: 'EXCELLENT',
+      dataClassification: 'SIMULATED TELEMETRY',
+      provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
     },
     digitalTwin: {
       cardiovascularStiffness: 0.14,
@@ -85,12 +117,23 @@ let astronauts = [
       bpDiastolic: 88,
       bodyTemp: 37.4,
       respirationRate: 18,
+      sleepDurationHours: 5.8,
+      physicalActivity: {
+        status: 'COMPLETED',
+        type: 'CEVIS_CYCLE',
+        reps: 0,
+        durationSec: 2100,
+        caloriesKcal: 285,
+        dailyTargetMins: 150
+      },
       stressScore: 68,
       sleepQuality: 61,
       hydrationPct: 88.0,
       radiationDoseRateUsvH: 49.2,
       overallHealthScore: 73,
-      status: 'WARNING'
+      status: 'WARNING',
+      dataClassification: 'SIMULATED TELEMETRY',
+      provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
     },
     digitalTwin: {
       cardiovascularStiffness: 0.34,
@@ -129,12 +172,23 @@ let astronauts = [
       bpDiastolic: 74,
       bodyTemp: 36.7,
       respirationRate: 13,
+      sleepDurationHours: 8.1,
+      physicalActivity: {
+        status: 'READY',
+        type: 'LBNP_TREADMILL',
+        reps: 0,
+        durationSec: 2400,
+        caloriesKcal: 320,
+        dailyTargetMins: 150
+      },
       stressScore: 30,
       sleepQuality: 92,
       hydrationPct: 96.5,
       radiationDoseRateUsvH: 18.4,
       overallHealthScore: 96,
-      status: 'EXCELLENT'
+      status: 'EXCELLENT',
+      dataClassification: 'SIMULATED TELEMETRY',
+      provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
     },
     digitalTwin: {
       cardiovascularStiffness: 0.10,
@@ -173,12 +227,23 @@ let astronauts = [
       bpDiastolic: 80,
       bodyTemp: 36.9,
       respirationRate: 15,
+      sleepDurationHours: 6.9,
+      physicalActivity: {
+        status: 'IN_PROGRESS',
+        type: 'T2_TREADMILL',
+        reps: 0,
+        durationSec: 1200,
+        caloriesKcal: 160,
+        dailyTargetMins: 150
+      },
       stressScore: 42,
       sleepQuality: 78,
       hydrationPct: 91.2,
       radiationDoseRateUsvH: 12.8,
       overallHealthScore: 86,
-      status: 'GOOD'
+      status: 'GOOD',
+      dataClassification: 'SIMULATED TELEMETRY',
+      provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
     },
     digitalTwin: {
       cardiovascularStiffness: 0.20,
@@ -208,7 +273,11 @@ let alerts = [
     message: 'Elevated resting HR (86 bpm) with diastolic BP rise to 88 mmHg. Correlates with microgravity vascular remodeling & post-EVA dehydration.',
     probability: 0.89,
     timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-    isAcknowledged: false
+    isAcknowledged: false,
+    dataClassification: 'DERIVED ANALYTICAL DATA',
+    provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY',
+    linkedResearchId: 'OSD-205',
+    suggestedAction: 'Prescribe 35m CEVIS cycle ergometry with 1.2L oral electrolyte hydration protocol.'
   },
   {
     id: 'alt-102',
@@ -220,7 +289,11 @@ let alerts = [
     message: 'NOAA SWPC / NASA DONKI alerts solar energetic proton wave. Dosimetry predicts +18 µSv/h elevation. Recommend shelter in water-wall haven.',
     probability: 0.78,
     timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-    isAcknowledged: false
+    isAcknowledged: false,
+    dataClassification: 'REAL RESEARCH DATA (Coupled to NASA DONKI)',
+    provenanceLabel: 'REAL RESEARCH DATA (DONKI / NOAA SWPC)',
+    linkedResearchId: 'NASA/TP-2020-5002995',
+    suggestedAction: 'Crew shelter in storm haven. Align habitat water wall to solar vector.'
   },
   {
     id: 'alt-103',
@@ -232,7 +305,11 @@ let alerts = [
     message: 'REM sleep deficiency observed over last 48 hours (-32m). Mild blue-light spectrum adjustment recommended in crew quarters.',
     probability: 0.42,
     timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-    isAcknowledged: true
+    isAcknowledged: true,
+    dataClassification: 'DERIVED ANALYTICAL DATA',
+    provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY',
+    linkedResearchId: 'OSD-365',
+    suggestedAction: 'Activate 480nm blue-depleted circadian lighting mode in crew sleep station.'
   }
 ];
 
@@ -254,23 +331,41 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ONLINE',
     service: 'AstraVital AI Deep Space Telemetry Hub',
-    version: '2026.4.1-SpaceApps',
+    version: '2026.4.2-SpaceApps-OSDR',
     timestamp: new Date().toISOString(),
     activeAstronauts: astronauts.length,
-    activeAlerts: alerts.filter(a => !a.isAcknowledged).length
+    activeAlerts: alerts.filter(a => !a.isAcknowledged).length,
+    researchKnowledgeBase: {
+      osdrStudiesCount: OSDR_STUDIES.length,
+      ntrsPublicationsCount: NTRS_PUBLICATIONS.length
+    },
+    simulation: {
+      isPaused: simulationState.isPaused,
+      scenario: simulationState.scenario,
+      seed: simulationState.seed
+    }
   });
 });
 
 // 2. Astronauts list
 app.get('/api/astronauts', (req, res) => {
-  res.json({ success: true, count: astronauts.length, data: astronauts });
+  res.json({
+    success: true,
+    count: astronauts.length,
+    data: astronauts,
+    provenanceNotice: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
+  });
 });
 
 // 3. Single Astronaut
 app.get('/api/astronauts/:id', (req, res) => {
   const ast = astronauts.find(a => a.id === req.params.id);
   if (!ast) return res.status(404).json({ error: 'Astronaut not found' });
-  res.json({ success: true, data: ast });
+  res.json({
+    success: true,
+    data: ast,
+    provenanceNotice: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
+  });
 });
 
 // 4. Update Telemetry
@@ -281,6 +376,7 @@ app.post('/api/astronauts/:id/telemetry', (req, res) => {
   ast.telemetry = { ...ast.telemetry, ...req.body };
   ast.telemetry.overallHealthScore = calculateHealthScore(ast.telemetry);
   ast.telemetry.status = getHealthScoreLabel(ast.telemetry.overallHealthScore);
+  ast.telemetry.provenanceLabel = 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY';
 
   res.json({ success: true, data: ast });
 });
@@ -297,14 +393,203 @@ app.post('/api/alerts/:id/ack', (req, res) => {
   res.json({ success: true, data: alert });
 });
 
-// 6. NASA Space Weather & Open Data Hub
+// --------------------------------------------------------------------------
+// 6. NASA OSDR & GENELAB RESEARCH REPOSITORY API
+// --------------------------------------------------------------------------
+app.get('/api/nasa/osdr', (req, res) => {
+  const { term, category, studyId } = req.query;
+
+  // Single study lookup
+  if (studyId) {
+    const study = OSDR_STUDIES.find(s => s.studyId.toLowerCase() === studyId.toLowerCase() || (s.legacyId && s.legacyId.toLowerCase() === studyId.toLowerCase()));
+    if (!study) {
+      return res.status(404).json({ success: false, error: 'OSDR study not found' });
+    }
+    return res.json({
+      success: true,
+      source: 'NASA Open Science Data Repository (OSDR)',
+      dataClassification: 'REAL RESEARCH DATA',
+      data: study
+    });
+  }
+
+  // Filter list
+  let results = [...OSDR_STUDIES];
+
+  if (category && category !== 'ALL') {
+    const catLower = category.toLowerCase();
+    results = results.filter(s =>
+      s.physiologicalSystem.toLowerCase().includes(catLower)
+    );
+  }
+
+  if (term && term.trim()) {
+    const q = term.toLowerCase().trim();
+    results = results.filter(s =>
+      s.studyId.toLowerCase().includes(q) ||
+      s.title.toLowerCase().includes(q) ||
+      s.description.toLowerCase().includes(q) ||
+      s.organism.toLowerCase().includes(q) ||
+      s.physiologicalSystem.toLowerCase().includes(q) ||
+      (s.keyFindings && s.keyFindings.toLowerCase().includes(q))
+    );
+  }
+
+  res.json({
+    success: true,
+    source: 'NASA Open Science Data Repository (OSDR) & GeneLab',
+    dataClassification: 'REAL RESEARCH DATA',
+    count: results.length,
+    data: results,
+    officialPortalUrl: 'https://osdr.nasa.gov/'
+  });
+});
+
+// --------------------------------------------------------------------------
+// 7. NASA TECHNICAL REPORTS SERVER (NTRS) API
+// --------------------------------------------------------------------------
+app.get('/api/nasa/ntrs', (req, res) => {
+  const { q, category, id } = req.query;
+
+  // Single publication lookup
+  if (id) {
+    const pub = NTRS_PUBLICATIONS.find(p => p.reportId.toLowerCase() === id.toLowerCase() || p.documentId.toLowerCase() === id.toLowerCase());
+    if (!pub) {
+      return res.status(404).json({ success: false, error: 'NTRS publication not found' });
+    }
+    return res.json({
+      success: true,
+      source: 'NASA Technical Reports Server (NTRS)',
+      dataClassification: 'REAL RESEARCH DATA',
+      data: pub
+    });
+  }
+
+  let results = [...NTRS_PUBLICATIONS];
+
+  if (category && category !== 'ALL') {
+    const catLower = category.toLowerCase();
+    results = results.filter(p => p.category.toLowerCase().includes(catLower));
+  }
+
+  if (q && q.trim()) {
+    const query = q.toLowerCase().trim();
+    results = results.filter(p =>
+      p.reportId.toLowerCase().includes(query) ||
+      p.title.toLowerCase().includes(query) ||
+      p.authors.toLowerCase().includes(query) ||
+      p.abstract.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query)
+    );
+  }
+
+  res.json({
+    success: true,
+    source: 'NASA Technical Reports Server (NTRS)',
+    dataClassification: 'REAL RESEARCH DATA',
+    count: results.length,
+    data: results,
+    officialPortalUrl: 'https://ntrs.nasa.gov/'
+  });
+});
+
+// --------------------------------------------------------------------------
+// 8. DATA PROVENANCE & CLASSIFICATION API
+// --------------------------------------------------------------------------
+app.get('/api/provenance', (req, res) => {
+  res.json({
+    success: true,
+    data: DATA_PROVENANCE_REGISTRY,
+    notice: 'Unified Provenance Classification: REAL RESEARCH DATA vs SIMULATED TELEMETRY vs DERIVED ANALYTICAL DATA'
+  });
+});
+
+// --------------------------------------------------------------------------
+// 9. SIMULATED TELEMETRY ENGINE CONTROLS & EXPORT
+// --------------------------------------------------------------------------
+app.post('/api/telemetry/control', (req, res) => {
+  const { action, scenario, seed } = req.body;
+
+  if (action === 'pause') {
+    simulationState.isPaused = true;
+  } else if (action === 'resume') {
+    simulationState.isPaused = false;
+  } else if (action === 'reset') {
+    simulationState.isPaused = false;
+    simulationState.scenario = 'nominal';
+    simulationState.tickCount = 0;
+    // Reset astronaut vitals back to initial nominals
+    resetAstronautNominals();
+  } else if (action === 'scenario' && scenario) {
+    simulationState.scenario = scenario;
+    simulationState.scenarioStartTime = Date.now();
+    applyScenarioParameters(scenario);
+  }
+
+  if (typeof seed === 'number') {
+    simulationState.seed = seed;
+  }
+
+  res.json({
+    success: true,
+    simulationState,
+    provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
+  });
+});
+
+app.get('/api/telemetry/history', (req, res) => {
+  const { astronautId } = req.query;
+  let history = [...telemetryHistoryBuffer];
+  if (astronautId) {
+    history = history.filter(h => h.astronautId === astronautId);
+  }
+  res.json({
+    success: true,
+    count: history.length,
+    data: history,
+    provenanceNotice: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
+  });
+});
+
+app.get('/api/telemetry/export', (req, res) => {
+  const format = req.query.format || 'json';
+
+  if (format === 'csv') {
+    let csv = '# ASTRAVITAL AI TELEMETRY EXPORT\n';
+    csv += '# CLASSIFICATION: SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY\n';
+    csv += '# DISCLAIMER: For research simulation and demonstration only. Does not reflect live astronaut data.\n';
+    csv += 'Timestamp,AstronautId,AstronautName,HeartRate_BPM,SpO2_Pct,Systolic_mmHg,Diastolic_mmHg,BodyTemp_C,RespirationRate,SleepDuration_Hours,StressScore,Radiation_uSv_h,Hydration_Pct,HealthScore,Status\n';
+
+    telemetryHistoryBuffer.forEach(item => {
+      csv += `${item.timestamp},${item.astronautId},"${item.astronautName}",${item.telemetry.heartRate},${item.telemetry.spo2},${item.telemetry.bpSystolic},${item.telemetry.bpDiastolic},${item.telemetry.bodyTemp},${item.telemetry.respirationRate},${item.telemetry.sleepDurationHours || 7.5},${item.telemetry.stressScore},${item.telemetry.radiationDoseRateUsvH},${item.telemetry.hydrationPct},${item.telemetry.overallHealthScore},${item.telemetry.status}\n`;
+    });
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="astravital_simulated_telemetry.csv"');
+    return res.send(csv);
+  }
+
+  // JSON format
+  res.json({
+    exportMetadata: {
+      platform: 'AstraVital AI - NASA Space Apps Challenge 2026',
+      dataClassification: 'SIMULATED TELEMETRY',
+      warning: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY',
+      exportedAt: new Date().toISOString(),
+      recordCount: telemetryHistoryBuffer.length
+    },
+    data: telemetryHistoryBuffer
+  });
+});
+
+// --------------------------------------------------------------------------
+// 10. NASA Space Weather & Open Data Hub
+// --------------------------------------------------------------------------
 app.get('/api/nasa/space-weather', async (req, res) => {
   try {
-    // Attempt live fetch from NASA DONKI Solar Flare API if key is available
     const nasaData = await fetchNasaDonki();
     res.json({ success: true, source: 'NASA_DONKI_OPEN_API', data: nasaData });
   } catch (err) {
-    // Robust high-fidelity space weather fallback model
     const fallback = generateSyntheticSpaceWeather();
     res.json({ success: true, source: 'ASTRA_SYNTHETIC_SPACE_WEATHER_MODEL', data: fallback });
   }
@@ -327,7 +612,9 @@ app.get('/api/nasa/apod', async (req, res) => {
   }
 });
 
-// 7. Astra AI Medical Decision Support Engine
+// --------------------------------------------------------------------------
+// 11. Astra AI Medical Decision Support Engine
+// --------------------------------------------------------------------------
 app.post('/api/ai/analyze', (req, res) => {
   const { astronautId, telemetry, prompt } = req.body;
   const ast = astronauts.find(a => a.id === astronautId) || astronauts[1];
@@ -337,7 +624,9 @@ app.post('/api/ai/analyze', (req, res) => {
   res.json({ success: true, data: response });
 });
 
-// 8. Mars Mission Health Degradation Simulator
+// --------------------------------------------------------------------------
+// 12. Mars Mission Health Degradation Simulator
+// --------------------------------------------------------------------------
 app.post('/api/mars-sim', (req, res) => {
   const {
     durationDays = 180,
@@ -357,7 +646,9 @@ app.post('/api/mars-sim', (req, res) => {
   res.json({ success: true, data: result });
 });
 
-// 9. Emergency Protocol Trigger
+// --------------------------------------------------------------------------
+// 13. Emergency Protocol Trigger
+// --------------------------------------------------------------------------
 app.post('/api/emergency/trigger', (req, res) => {
   const { type, astronautId, details } = req.body;
   emergencyState = {
@@ -376,7 +667,6 @@ app.post('/api/emergency/trigger', (req, res) => {
     ]
   };
 
-  // Add critical alert
   alerts.unshift({
     id: `alt-emg-${Date.now()}`,
     astronautId: emergencyState.astronautId,
@@ -387,7 +677,9 @@ app.post('/api/emergency/trigger', (req, res) => {
     message: `Red Alert triggered by mission control. Immediate life support intervention protocol active.`,
     probability: 0.99,
     timestamp: emergencyState.timestamp,
-    isAcknowledged: false
+    isAcknowledged: false,
+    dataClassification: 'DERIVED ANALYTICAL DATA',
+    provenanceLabel: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY'
   });
 
   res.json({ success: true, data: emergencyState });
@@ -403,32 +695,83 @@ app.get('/api/emergency/status', (req, res) => {
   res.json({ success: true, data: emergencyState });
 });
 
-// 10. Real-time Telemetry Server-Sent Events (SSE) Stream
+// --------------------------------------------------------------------------
+// 14. Real-time Telemetry Server-Sent Events (SSE) Stream
+// --------------------------------------------------------------------------
 app.get('/api/stream/telemetry', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-  // Send an initial packet
   const sendTick = () => {
-    // Generate realistic fluctuating micro-variations
-    astronauts.forEach(ast => {
-      const deltaHr = (Math.random() - 0.48) * 1.8;
-      ast.telemetry.heartRate = Math.max(50, Math.min(130, Number((ast.telemetry.heartRate + deltaHr).toFixed(1))));
+    if (simulationState.isPaused) {
+      return;
+    }
 
-      const deltaSpo2 = (Math.random() - 0.5) * 0.2;
-      ast.telemetry.spo2 = Math.max(92, Math.min(100, Number((ast.telemetry.spo2 + deltaSpo2).toFixed(1))));
+    simulationState.tickCount++;
 
-      const deltaRad = (Math.random() - 0.5) * 0.8;
-      ast.telemetry.radiationDoseRateUsvH = Math.max(8, Number((ast.telemetry.radiationDoseRateUsvH + deltaRad).toFixed(2)));
+    // Generate realistic fluctuating micro-variations using simulation seed math
+    astronauts.forEach((ast, idx) => {
+      // Deterministic variation factor based on seed and tick
+      const noise = Math.sin((simulationState.tickCount * 0.1) + (idx * 1.5) + simulationState.seed);
+      const noise2 = Math.cos((simulationState.tickCount * 0.15) + (idx * 2.1));
+
+      let hrDelta = noise * 1.2;
+      let spo2Delta = noise2 * 0.15;
+      let radDelta = noise * 0.4;
+      let bpDelta = noise * 1.0;
+      let respDelta = noise2 * 0.4;
+
+      // Inject scenario behavior
+      if (simulationState.scenario === 'warning' && ast.id === 'ast-002') {
+        hrDelta += 0.8;
+        spo2Delta -= 0.3;
+        radDelta += 1.2;
+      } else if (simulationState.scenario === 'critical' && ast.id === 'ast-002') {
+        hrDelta += 1.8;
+        spo2Delta -= 0.7;
+        radDelta += 3.5;
+        bpDelta += 1.5;
+      }
+
+      ast.telemetry.heartRate = Math.max(50, Math.min(145, Number((ast.telemetry.heartRate + hrDelta).toFixed(1))));
+      ast.telemetry.spo2 = Math.max(88, Math.min(100, Number((ast.telemetry.spo2 + spo2Delta).toFixed(1))));
+      ast.telemetry.bpSystolic = Math.max(95, Math.min(160, Math.round(ast.telemetry.bpSystolic + bpDelta * 0.3)));
+      ast.telemetry.bpDiastolic = Math.max(60, Math.min(105, Math.round(ast.telemetry.bpDiastolic + bpDelta * 0.2)));
+      ast.telemetry.respirationRate = Math.max(10, Math.min(26, Number((ast.telemetry.respirationRate + respDelta).toFixed(1))));
+      ast.telemetry.radiationDoseRateUsvH = Math.max(8, Number((ast.telemetry.radiationDoseRateUsvH + radDelta).toFixed(2)));
 
       ast.telemetry.overallHealthScore = calculateHealthScore(ast.telemetry);
       ast.telemetry.status = getHealthScoreLabel(ast.telemetry.overallHealthScore);
+      ast.telemetry.provenanceLabel = 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY';
+
+      // Dynamically sync organ stress on digital twin
+      syncDigitalTwinOrganStress(ast);
+
+      // Record snapshot to ring buffer every 3 ticks
+      if (simulationState.tickCount % 3 === 0) {
+        telemetryHistoryBuffer.push({
+          timestamp: new Date().toISOString(),
+          astronautId: ast.id,
+          astronautName: ast.name,
+          telemetry: { ...ast.telemetry }
+        });
+        if (telemetryHistoryBuffer.length > MAX_HISTORY_POINTS * astronauts.length) {
+          telemetryHistoryBuffer.shift();
+        }
+      }
     });
 
     const packet = {
       timestamp: new Date().toISOString(),
+      provenanceNotice: 'SIMULATED DATA – NOT REAL ASTRONAUT TELEMETRY',
+      simulation: {
+        isPaused: simulationState.isPaused,
+        scenario: simulationState.scenario,
+        tick: simulationState.tickCount,
+        seed: simulationState.seed
+      },
       astronauts: astronauts.map(a => ({
         id: a.id,
         name: a.name,
@@ -453,8 +796,65 @@ app.get('/api/stream/telemetry', (req, res) => {
 });
 
 // --------------------------------------------------------------------------
-// HELPER LOGIC & NASA ALGORITHMS
+// HELPER LOGIC, NASA ALGORITHMS, & SCENARIOS
 // --------------------------------------------------------------------------
+
+function resetAstronautNominals() {
+  astronauts[0].telemetry.heartRate = 68;
+  astronauts[0].telemetry.spo2 = 98.6;
+  astronauts[0].telemetry.bpSystolic = 118;
+  astronauts[0].telemetry.bpDiastolic = 76;
+  astronauts[0].telemetry.radiationDoseRateUsvH = 42.5;
+
+  astronauts[1].telemetry.heartRate = 86;
+  astronauts[1].telemetry.spo2 = 95.8;
+  astronauts[1].telemetry.bpSystolic = 134;
+  astronauts[1].telemetry.bpDiastolic = 88;
+  astronauts[1].telemetry.radiationDoseRateUsvH = 49.2;
+
+  astronauts.forEach(ast => {
+    ast.telemetry.overallHealthScore = calculateHealthScore(ast.telemetry);
+    ast.telemetry.status = getHealthScoreLabel(ast.telemetry.overallHealthScore);
+  });
+}
+
+function applyScenarioParameters(scenario) {
+  if (scenario === 'nominal') {
+    resetAstronautNominals();
+  } else if (scenario === 'warning') {
+    astronauts[1].telemetry.heartRate = 96;
+    astronauts[1].telemetry.spo2 = 94.2;
+    astronauts[1].telemetry.stressScore = 74;
+    astronauts[1].telemetry.bpSystolic = 142;
+    astronauts[1].telemetry.radiationDoseRateUsvH = 62.4;
+  } else if (scenario === 'critical') {
+    astronauts[1].telemetry.heartRate = 124;
+    astronauts[1].telemetry.spo2 = 90.8;
+    astronauts[1].telemetry.stressScore = 92;
+    astronauts[1].telemetry.bpSystolic = 158;
+    astronauts[1].telemetry.bpDiastolic = 98;
+    astronauts[1].telemetry.radiationDoseRateUsvH = 118.5;
+  }
+}
+
+function syncDigitalTwinOrganStress(ast) {
+  const t = ast.telemetry;
+  const dt = ast.digitalTwin;
+  if (!dt || !dt.organStress) return;
+
+  // Cardiac stress responds to heart rate & systolic BP
+  const hrFactor = Math.max(0.1, Math.min(1.0, (t.heartRate - 60) / 70));
+  const bpFactor = Math.max(0.1, Math.min(1.0, (t.bpSystolic - 110) / 45));
+  dt.organStress.heart = Number(((hrFactor * 0.6) + (bpFactor * 0.4)).toFixed(2));
+
+  // Pulmonary stress responds to SpO2 desaturation
+  dt.organStress.lungs = Number(Math.max(0.1, Math.min(1.0, (100 - t.spo2) / 10)).toFixed(2));
+
+  // Brain & Optic nerve stress responds to cephalic fluid shift & stress score
+  const stressFactor = t.stressScore / 100;
+  dt.organStress.brain = Number(Math.min(0.95, 0.15 + (stressFactor * 0.5) + (dt.cephalicFluidShiftMl / 3000)).toFixed(2));
+  dt.organStress.opticNerve = Number(Math.min(0.9, 0.1 + (dt.cephalicFluidShiftMl / 3200)).toFixed(2));
+}
 
 function calculateHealthScore(t) {
   let score = 100;
@@ -464,8 +864,8 @@ function calculateHealthScore(t) {
   else if (t.heartRate < 60 || t.heartRate > 85) score -= 8;
 
   // SpO2 evaluation (optimal >= 97)
-  if (t.spo2 < 94) score -= 30;
-  else if (t.spo2 < 97) score -= 14;
+  if (t.spo2 < 93) score -= 32;
+  else if (t.spo2 < 96) score -= 14;
 
   // Stress evaluation (optimal < 35)
   if (t.stressScore > 70) score -= 22;
@@ -495,53 +895,77 @@ function runAstraClinicalInference(ast, t, userQuery) {
 
   if (t.heartRate > 85) {
     anomalies.push({
-      metric: 'Cardiovascular (HR)',
-      observed: `${t.heartRate} bpm`,
-      normalRange: '60 - 80 bpm',
-      pathophysiology: 'Microgravity cephalad fluid shift increases central venous pressure initially, causing baroreceptor recalibration and reduced cardiac stroke volume over extended durations.'
+      indicator: 'Cardiovascular (Heart Rate)',
+      observedValue: `${t.heartRate} bpm`,
+      thresholdBaseline: '60 - 80 bpm (Resting in microgravity)',
+      severity: t.heartRate > 110 ? 'CRITICAL' : 'WARNING',
+      explanation: 'Microgravity cephalad fluid redistribution decreases lower extremity hydrostatic gradient, triggering compensatory baroreceptor reset and autonomic sympathetic dominance.',
+      dataSource: 'SIMULATED TELEMETRY (Synthesized ECG Lead II)',
+      suggestedAction: 'Prescribe 30 minutes on cycle ergometer (CEVIS) at 70% VO2 max with Lower Body Negative Pressure (LBNP) suit.',
+      linkedNasaStudy: 'OSD-205 (NASA Twins Study Carotid Remodeling)',
+      linkedReport: 'NASA/TM-2018-219801 (Cardiovascular Spaceflight Deconditioning)'
     });
     recommendations.push('Prescribe 30 minutes on cycle ergometer at 70% VO2 max with Lower Body Negative Pressure (LBNP) suit.');
   }
 
   if (t.spo2 < 97) {
     anomalies.push({
-      metric: 'Pulmonary (SpO2)',
-      observed: `${t.spo2}%`,
-      normalRange: '98 - 100%',
-      pathophysiology: 'Reduced ventilation-perfusion matching in microgravity combined with potential carbon dioxide pocket accumulation in sleeping module.'
+      indicator: 'Pulmonary Ventilation (SpO2)',
+      observedValue: `${t.spo2}%`,
+      thresholdBaseline: '98 - 100% (NASA-STD-3001 Vol 1)',
+      severity: t.spo2 < 94 ? 'CRITICAL' : 'WARNING',
+      explanation: 'Reduced ventilation-perfusion matching in microgravity combined with localized carbon dioxide pocket stagnation in sleeping module.',
+      dataSource: 'SIMULATED TELEMETRY (Synthesized Pulse Oximeter)',
+      suggestedAction: 'Inspect crew quarter cabin air scrubbers for CO2 stagnation; initiate 15m hyper-oxygenation protocol.',
+      linkedNasaStudy: 'OSD-379 (Mitochondrial Oxidative Respiration)',
+      linkedReport: 'NASA-STD-3001-VOL-1 (Atmospheric Standards)'
     });
     recommendations.push('Inspect crew quarter cabin air scrubbers for CO2 stagnation; initiate 15m hyper-oxygenation protocol.');
   }
 
   if (t.stressScore > 55) {
     anomalies.push({
-      metric: 'Neuro-Psychological (Stress Index)',
-      observed: `${t.stressScore}/100`,
-      normalRange: '< 40/100',
-      pathophysiology: 'Prolonged confined isolation, disruption of circadian photoreceptors, and acoustic white-noise fatigue.'
+      indicator: 'Neuro-Psychological Stress Index',
+      observedValue: `${t.stressScore}/100`,
+      thresholdBaseline: '< 40/100 (Nominal autonomic balance)',
+      severity: 'WARNING',
+      explanation: 'Prolonged confined isolation, disruption of circadian photoreceptors, and acoustic white-noise fatigue aboard deep space transit habitat.',
+      dataSource: 'DERIVED ANALYTICAL DATA (HRV Spectral Power Algorithm)',
+      suggestedAction: 'Schedule VR nature immersion session (Artemis Tranquility Protocol); administer 0.5mg melatonin 30 min before sleep cycle.',
+      linkedNasaStudy: 'OSD-365 (ISS Circadian Melatonin Desynchrony)',
+      linkedReport: 'NASA/CR-2017-219502 (Behavioral Health Architecture)'
     });
     recommendations.push('Schedule VR nature immersion session (Artemis Tranquility Protocol); administer 0.5mg melatonin 30 min before sleep cycle.');
   }
 
   if (t.radiationDoseRateUsvH > 40) {
     anomalies.push({
-      metric: 'Ionizing Radiation Exposure',
-      observed: `${t.radiationDoseRateUsvH} µSv/h`,
-      normalRange: '< 25 µSv/h',
-      pathophysiology: 'Galactic Cosmic Ray (GCR) background combined with low-energy solar proton surge.'
+      indicator: 'Ionizing Radiation Exposure Rate',
+      observedValue: `${t.radiationDoseRateUsvH} µSv/h`,
+      thresholdBaseline: '< 25 µSv/h (Deep space baseline)',
+      severity: t.radiationDoseRateUsvH > 80 ? 'CRITICAL' : 'WARNING',
+      explanation: 'Galactic Cosmic Ray (GCR) background combined with low-energy solar proton surge detected along interplanetary trajectory.',
+      dataSource: 'SIMULATED TELEMETRY + NASA DONKI Solar Alert',
+      suggestedAction: 'Relocate sleeping quarters adjacent to potable water storage tanks to optimize hydrogen shielding.',
+      linkedNasaStudy: 'OSD-665 (GCR Endothelial Senescence)',
+      linkedReport: 'NASA/TP-2020-5002995 (CNS Space Radiation Risk)'
     });
     recommendations.push('Relocate sleeping quarters adjacent to potable water storage tanks to optimize hydrogen shielding.');
   }
 
-  // If no anomalies
   if (anomalies.length === 0) {
     anomalies.push({
-      metric: 'System Status',
-      observed: 'All Vitals Nominal',
-      normalRange: 'Within 95% NASA Medical Standards',
-      pathophysiology: 'Autonomic nervous system in optimal adaptation equilibrium with microgravity environment.'
+      indicator: 'Multi-System Biometric Status',
+      observedValue: 'All Vitals Nominal',
+      thresholdBaseline: 'Within 95% NASA Medical Standards (NASA-STD-3001)',
+      severity: 'NOMINAL',
+      explanation: 'Autonomic nervous system in optimal adaptation equilibrium with microgravity environment.',
+      dataSource: 'SIMULATED TELEMETRY STREAM',
+      suggestedAction: 'Continue baseline daily 2.5-hour ARED (Advanced Resistive Exercise Device) and aerobic regimen.',
+      linkedNasaStudy: 'OSD-120 (Skeletal Muscle Countermeasure Preservation)',
+      linkedReport: 'NASA/TP-2015-218575 (Exercise Countermeasures)'
     });
-    recommendations.push('Continue baseline daily 2.5-hour ARED (Advanced Resistive Exercise Device) and aerobic regimen.');
+    recommendations.push('Continue baseline daily 2.5-hour ARED and aerobic regimen.');
   }
 
   return {
@@ -549,17 +973,15 @@ function runAstraClinicalInference(ast, t, userQuery) {
     healthScore: t.overallHealthScore,
     status: t.status,
     anomalies,
-    clinicalSummary: `Astra AI clinical evaluation for ${ast.name}: Astronaut exhibits ${t.status.toLowerCase()} physiological telemetry with overall biometric index of ${t.overallHealthScore}/100. Key concern revolves around ${anomalies[0].metric.toLowerCase()}.`,
+    clinicalSummary: `Astra AI clinical evaluation for ${ast.name}: Astronaut exhibits ${t.status.toLowerCase()} physiological telemetry with overall biometric index of ${t.overallHealthScore}/100. Primary observation centers on ${anomalies[0].indicator.toLowerCase()}.`,
     actionableProtocols: recommendations,
     aiConfidenceScore: 0.942,
-    spaceMedicineCitation: 'NASA SP-2020-5007: Principles of Clinical Space Medicine for Long-Duration Exploration'
+    spaceMedicineCitation: 'NASA SP-20205009772: Principles of Clinical Space Medicine for Long-Duration Exploration Missions',
+    provenanceNotice: 'DERIVED ANALYTICAL DATA – For simulation and decision support demonstration only.'
   };
 }
 
 function runMarsSimulationEngine({ durationDays, shieldingType, exerciseHoursPerDay, dietSupplementation }) {
-  // NASA human research program bio-mathematical model
-  // Monthly bone loss in microgravity without countermeasure is ~1.2%
-  // Exercise mitigates up to 65% of loss
   const exerciseFactor = Math.min(1.0, exerciseHoursPerDay / 3.0);
   const dietFactor = dietSupplementation ? 0.2 : 0.0;
   const boneMitigation = (0.55 * exerciseFactor) + dietFactor;
@@ -568,7 +990,6 @@ function runMarsSimulationEngine({ durationDays, shieldingType, exerciseHoursPer
   const months = durationDays / 30;
   const totalBoneLossPct = Number((netMonthlyBoneLoss * months).toFixed(1));
 
-  // Radiation shielding effectiveness
   const shieldingMultipliers = {
     'Aluminum_Baseline': 1.0,
     'Polyethylene_Composite': 0.68,
@@ -576,19 +997,13 @@ function runMarsSimulationEngine({ durationDays, shieldingType, exerciseHoursPer
     'Regolith_Habitat': 0.28
   };
   const shieldFactor = shieldingMultipliers[shieldingType] || 0.7;
-  const baseDailyDoseMsv = 1.6; // Deep space GCR + SEP average
+  const baseDailyDoseMsv = 1.6;
   const totalRadiationDoseMsv = Number((baseDailyDoseMsv * durationDays * shieldFactor).toFixed(1));
 
-  // Cardiovascular deconditioning risk
   const cardioRisk = Math.max(5, Math.min(95, Math.round(50 * (1 - exerciseFactor) + (durationDays / 12))));
-
-  // SANS (Spaceflight Associated Neuro-ocular Syndrome) risk
   const sansRisk = Math.min(85, Math.round(15 + (durationDays * 0.06)));
-
-  // Excess Relative Risk of Radiation Carcinogenesis
   const cancerExcessRiskPct = Number((totalRadiationDoseMsv * 0.004).toFixed(2));
 
-  // Trajectory timeline checkpoints
   const timeline = [
     { day: 0, label: 'Earth Departure & TMI Burn', healthScore: 98, status: 'NOMINAL' },
     { day: Math.round(durationDays * 0.25), label: 'Mid-Course Correction 1 (Deep Space)', healthScore: Math.round(98 - (totalBoneLossPct * 0.4)), status: 'MONITORED' },
@@ -608,7 +1023,8 @@ function runMarsSimulationEngine({ durationDays, shieldingType, exerciseHoursPer
     cardiovascularAtrophyRiskPct: cardioRisk,
     sansOcularRiskPct: sansRisk,
     missionReadinessScore: Math.max(35, Math.min(99, Math.round(100 - (totalBoneLossPct * 1.5) - (totalRadiationDoseMsv * 0.08) - (cardioRisk * 0.2)))),
-    timeline
+    timeline,
+    provenanceNotice: 'DERIVED ANALYTICAL DATA (NASA Human Research Program Bio-Mathematical Model)'
   };
 }
 
@@ -676,12 +1092,14 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`================================================================`);
     console.log(`🚀 AstraVital AI Server online at: http://localhost:${PORT}`);
     console.log(`🛰️  NASA Space Apps Challenge 2026 - Astronaut Health Platform`);
-    console.log(`📡 Telemetry SSE Stream: http://localhost:${PORT}/api/stream/telemetry`);
+    console.log(`🔬 NASA OSDR & GeneLab Explorer: http://localhost:${PORT}/api/nasa/osdr`);
+    console.log(`📚 NASA NTRS Technical Reports:  http://localhost:${PORT}/api/nasa/ntrs`);
+    console.log(`📡 Telemetry SSE Stream:         http://localhost:${PORT}/api/stream/telemetry`);
     console.log(`================================================================`);
   });
 }

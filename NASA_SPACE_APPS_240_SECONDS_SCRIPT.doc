@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>NASA Space Apps Challenge - 240 Seconds of Glory Presentation Script</title>
+<style>
+  body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #1F2937; margin: 30px; }
+  h1 { font-size: 22pt; color: #0B3D91; border-bottom: 2px solid #0B3D91; padding-bottom: 6px; margin-bottom: 8px; }
+  h2 { font-size: 14pt; color: #0284C7; margin-top: 22px; margin-bottom: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
+  h3 { font-size: 12pt; color: #1E293B; margin-top: 14px; margin-bottom: 6px; }
+  p { margin-bottom: 10px; }
+  .badge { display: inline-block; padding: 2px 8px; font-weight: bold; font-size: 9pt; border-radius: 4px; }
+  .badge-who { background-color: #DBEAFE; color: #1E40AF; }
+  .badge-why { background-color: #FEE2E2; color: #991B1B; }
+  .badge-what { background-color: #FEF3C7; color: #92400E; }
+  .badge-how { background-color: #D1FAE5; color: #065F46; }
+  .badge-impact { background-color: #EDE9FE; color: #5B21B6; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 18px; }
+  th { background-color: #0B3D91; color: white; text-align: left; padding: 8px 10px; font-size: 10pt; }
+  td { border: 1px solid #CBD5E1; padding: 8px 10px; font-size: 9.5pt; vertical-align: top; }
+  tr:nth-child(even) { background-color: #F8FAFC; }
+  .spoken-script { background-color: #F1F5F9; border-left: 4px solid #0B3D91; padding: 12px 16px; font-size: 11.5pt; font-style: italic; line-height: 1.6; margin: 12px 0; }
+  .direction { font-style: normal; font-weight: bold; color: #D97706; }
+  .callout { background-color: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; padding: 12px; margin-bottom: 15px; }
+</style>
+</head>
+<body>
+
+<h1>NASA SPACE APPS CHALLENGE 2026</h1>
+<h2 style='border:none; margin-top:-5px; color:#475569;'>240 SECONDS OF GLORY: OFFICIAL PITCH SCRIPT & SCREEN RECORDING GUIDE</h2>
+
+<div class='callout'>
+  <strong>Project:</strong> AstraVital AI — Intelligent Astronaut Health Monitoring & Digital Twin Platform<br>
+  <strong>Team:</strong> Team Zero<br>
+  <strong>Challenge Track:</strong> Create Health Monitoring Software for Astronauts on Space Missions<br>
+  <strong>Total Video Duration:</strong> Exactly 240 Seconds (4 Minutes 00 Seconds)<br>
+  <strong>Total Spoken Word Count:</strong> 472 Words (~118 Words/Minute — Competition Standard)<br>
+  <strong>Core Scientific Repositories:</strong> NASA OSDR, NASA GeneLab, NASA NTRS, NASA-STD-3001
+</div>
+
+<h2>1. THE 240-SECOND MASTER TIMELINE BREAKDOWN</h2>
+<table>
+  <tr>
+    <th>Section</th>
+    <th>Infographic Element</th>
+    <th>Timestamp</th>
+    <th>Duration</th>
+    <th>Spoken Words</th>
+    <th>Pacing</th>
+  </tr>
+  <tr>
+    <td><strong>WHO</strong></td>
+    <td>Attention & Authenticity</td>
+    <td>0:00 – 0:25</td>
+    <td>25 sec</td>
+    <td>48 words</td>
+    <td>115 wpm</td>
+  </tr>
+  <tr>
+    <td><strong>WHY</strong></td>
+    <td>Problem & Importance</td>
+    <td>0:25 – 1:05</td>
+    <td>40 sec</td>
+    <td>78 words</td>
+    <td>117 wpm</td>
+  </tr>
+  <tr>
+    <td><strong>WHAT</strong></td>
+    <td>Big Idea & Innovation</td>
+    <td>1:05 – 1:55</td>
+    <td>50 sec</td>
+    <td>98 words</td>
+    <td>118 wpm</td>
+  </tr>
+  <tr>
+    <td><strong>HOW</strong></td>
+    <td>Live Demonstration</td>
+    <td>1:55 – 3:20</td>
+    <td>85 sec</td>
+    <td>170 words</td>
+    <td>120 wpm</td>
+  </tr>
+  <tr>
+    <td><strong>IMPACT</strong></td>
+    <td>Future Vision & Closing</td>
+    <td>3:20 – 4:00</td>
+    <td>40 sec</td>
+    <td>78 words</td>
+    <td>117 wpm</td>
+  </tr>
+  <tr style='font-weight:bold; background-color:#E2E8F0;'>
+    <td>TOTAL</td>
+    <td>Complete Video Pitch</td>
+    <td>0:00 – 4:00</td>
+    <td>240 sec</td>
+    <td>472 words</td>
+    <td>118 wpm</td>
+  </tr>
+</table>
+
+<h2>2. COMPLETE 240-SECOND SPOKEN PRESENTATION SCRIPT</h2>
+
+<h3><span class='badge badge-who'>SECTION 1: WHO</span> (0:00 – 0:25 | 25 Seconds | 48 Words)</h3>
+<div class='spoken-script'>
+  When human beings journey to Mars, Earth will become a distant speck of light <span class='direction'>[pause - 1s]</span>—and a medical emergency call will take twenty-two minutes just to reach Houston.<br><br>
+  We are <strong>Team Zero</strong>, passionate software engineers and space medicine researchers inspired by NASA’s bold vision for deep space exploration.
+</div>
+
+<h3><span class='badge badge-why'>SECTION 2: WHY</span> (0:25 – 1:05 | 40 Seconds | 78 Words)</h3>
+<div class='spoken-script'>
+  In microgravity, human biology undergoes profound disruption.<br><br>
+  Fluids shift toward the head, triggering Spaceflight Associated Neuro-ocular Syndrome <span class='direction'>[SANS]</span>. Cosmic radiation bombards cellular DNA, while bone mineral density decays at over one percent per month.<br><br>
+  NASA has invested decades into understanding these hazards through the Human Research Program.<br><br>
+  Because on a three-year voyage to Mars, we cannot transport a hospital—astronauts require autonomous, scientifically validated health intelligence that operates completely independently of Earth.
+</div>
+
+<h3><span class='badge badge-what'>SECTION 3: WHAT</span> (1:05 – 1:55 | 50 Seconds | 98 Words)</h3>
+<div class='spoken-script'>
+  Our solution is <strong>AstraVital AI</strong>: an autonomous health monitoring and physiological digital twin platform.<br><br>
+  Unlike conventional trackers that treat telemetry in isolation, AstraVital AI is anchored directly in authentic NASA research.<br><br>
+  We integrate the <strong>NASA Open Science Data Repository (OSDR)</strong> and <strong>GeneLab</strong>—incorporating landmark datasets like the NASA Twins Study—paired with peer-reviewed clinical guidelines from the <strong>NASA Technical Reports Server (NTRS)</strong>.<br><br>
+  Furthermore, we establish strict scientific provenance: clearly distinguishing authentic NASA research datasets, simulated real-time telemetry, and derived algorithmic analytics.
+</div>
+
+<h3><span class='badge badge-how'>SECTION 4: HOW</span> (1:55 – 3:20 | 85 Seconds | 170 Words)</h3>
+<div class='spoken-script'>
+  Here is AstraVital AI in action.<br><br>
+  On our <strong>Mission Dashboard</strong>, ten core physiological parameters stream in real-time, prominently marked as simulated telemetry. We can configure mission seeds, trigger simulated solar flare warnings, or monitor active exercise countermeasures.<br><br>
+  When a flight surgeon inspects an elevated parameter—such as heart rate or intracranial pressure—our <strong>Research-to-Dashboard connection</strong> instantly surfaces corresponding NASA OSDR studies and NTRS publications, providing full DOI citations and biological context.<br><br>
+  Our dedicated <strong>NASA Research Explorer</strong> allows users to query authentic spaceflight biology datasets, while the <strong>NTRS Library</strong> categorizes clinical practice standards such as NASA-STD-3001.<br><br>
+  Next, our <strong>3D Astronaut Digital Twin</strong> visualizes microgravity organ stress across the left ventricle, optic nerve, axial spine, and femur—dynamically synchronizing with telemetry.<br><br>
+  Finally, our <strong>Mission Simulator</strong> projects bone resorption, cumulative cosmic radiation, and mission readiness across an entire 180 to 1,000-day interplanetary transit.
+</div>
+
+<h3><span class='badge badge-impact'>SECTION 5: IMPACT & YOUR NEEDS</span> (3:20 – 4:00 | 40 Seconds | 78 Words)</h3>
+<div class='spoken-script'>
+  AstraVital AI demonstrates the transformative power of NASA Open Science.<br><br>
+  By unlocking decades of publicly funded research and uniting it with intelligent digital twin technology, we can support autonomous clinical decisions for the Artemis Moon bases and future crews bound for Mars.<br><br>
+  Humanity is stepping into the deep space era <span class='direction'>[pause - 1s]</span>—and with AstraVital AI, our health travels with us. Thank you.
+</div>
+
+<h2>3. SCENE-BY-SCENE SCREEN RECORDING PLAN</h2>
+<table>
+  <tr>
+    <th style='width:12%;'>Timestamp</th>
+    <th style='width:10%;'>Section</th>
+    <th style='width:30%;'>Visual on Screen</th>
+    <th style='width:28%;'>Cursor Action & Interaction</th>
+    <th style='width:20%;'>On-Screen Text / Overlay</th>
+  </tr>
+  <tr>
+    <td><strong>0:00 – 0:12</strong></td>
+    <td><span class='badge badge-who'>WHO</span></td>
+    <td>Hero Section (<code>#view-hero</code>) with 3D Earth, orbital ISS trajectory, and Team Zero branding.</td>
+    <td>Smooth camera orbit around 3D Earth. Cursor hovers gently over LEO altitude indicator.</td>
+    <td><strong>ASTRAVITAL AI</strong><br>NASA Space Apps Challenge 2026</td>
+  </tr>
+  <tr>
+    <td><strong>0:12 – 0:25</strong></td>
+    <td><span class='badge badge-who'>WHO</span></td>
+    <td>Hero telemetry strip & toggle button to Mars orbit.</td>
+    <td>Click 'Mars & Ares IV' celestial button; 3D view smoothly transitions to Red Planet.</td>
+    <td><strong>TEAM ZERO</strong><br>Deep Space Autonomous Health Intelligence</td>
+  </tr>
+  <tr>
+    <td><strong>0:25 – 0:45</strong></td>
+    <td><span class='badge badge-why'>WHY</span></td>
+    <td>Mission Dashboard (<code>#view-dashboard</code>) with live streaming vitals and warning telemetry on Dr. Marcus Thorne.</td>
+    <td>Cursor hovers over Heart Rate (86 bpm) and Blood Pressure (134/88 mmHg).</td>
+    <td><strong>THE CHALLENGE:</strong><br>Microgravity Cephalic Shift & SANS</td>
+  </tr>
+  <tr>
+    <td><strong>0:45 – 1:05</strong></td>
+    <td><span class='badge badge-why'>WHY</span></td>
+    <td>Active Anomaly Alerts Tray displaying explainable alert and 22-minute communication delay context.</td>
+    <td>Point to AI Anomaly alert showing observed value, threshold, and space medicine reference.</td>
+    <td><strong>THE NEED:</strong><br>Autonomous Clinical Support Beyond Earth</td>
+  </tr>
+  <tr>
+    <td><strong>1:05 – 1:30</strong></td>
+    <td><span class='badge badge-what'>WHAT</span></td>
+    <td>Data Provenance Center (<code>#view-provenance</code>). Three distinct classification cards.</td>
+    <td>Highlight: 🟢 Real Research Data vs 🟡 Simulated Telemetry vs 🟣 Derived Analytics.</td>
+    <td><strong>SCIENTIFIC PROVENANCE:</strong><br>Powered by NASA Open Science</td>
+  </tr>
+  <tr>
+    <td><strong>1:30 – 1:55</strong></td>
+    <td><span class='badge badge-what'>WHAT</span></td>
+    <td>Telemetry Dictionary table showing linked NASA studies (OSD-205, OSD-120, NTRS reports).</td>
+    <td>Filter dictionary by 'Real Research', showing study accession numbers and DOIs.</td>
+    <td><strong>NASA OSDR & NTRS:</strong><br>Authentic Biological Grounding</td>
+  </tr>
+  <tr>
+    <td><strong>1:55 – 2:15</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Mission Dashboard vitals grid & Simulation Control Bar.</td>
+    <td>Click 'Pause' then 'Resume'. Inject 'Warning Scenario'. Point to mandatory 'SIMULATED DATA' notice.</td>
+    <td><strong>SIMULATED TELEMETRY:</strong><br>10 Core Parameters • Seed Controlled</td>
+  </tr>
+  <tr>
+    <td><strong>2:15 – 2:35</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Click Heart Rate card -> Research Context Modal (<code>#research-context-modal</code>) pops up.</td>
+    <td>Show linked NASA OSDR-205 study (Twins Study) and NTRS report with direct link buttons.</td>
+    <td><strong>RESEARCH-TO-DASHBOARD:</strong><br>Real NASA Citations for Live Indicators</td>
+  </tr>
+  <tr>
+    <td><strong>2:35 – 2:48</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Switch to NASA Research Explorer (<code>#view-osdr</code>).</td>
+    <td>Type 'Twins' in search bar. Filter by 'Musculoskeletal' to show OSD-120 and OSD-563.</td>
+    <td><strong>NASA OSDR & GENELAB:</strong><br>Spaceflight Biology & Multi-Omics</td>
+  </tr>
+  <tr>
+    <td><strong>2:48 – 2:58</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Switch to NASA Research Library (<code>#view-ntrs</code>).</td>
+    <td>Show NASA/SP-20205009772, NASA-STD-3001, and SANS clinical practice guidelines.</td>
+    <td><strong>NASA NTRS LIBRARY:</strong><br>Flight Surgeon Operational Standards</td>
+  </tr>
+  <tr>
+    <td><strong>2:58 – 3:10</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Switch to 3D Digital Twin (<code>#view-digital-twin</code>).</td>
+    <td>Click 'Cardiac', then 'Brain & SANS', then 'Femur'. Click 'View NASA Research Citations'.</td>
+    <td><strong>3D DIGITAL TWIN:</strong><br>Dynamic Organ Stress Coupling</td>
+  </tr>
+  <tr>
+    <td><strong>3:10 – 3:20</strong></td>
+    <td><span class='badge badge-how'>HOW</span></td>
+    <td>Switch to Mars Mission Sandbox (<code>#view-mars-sim</code>).</td>
+    <td>Slide duration slider to 540 Days. Select 'Polyethylene Composite' shielding.</td>
+    <td><strong>MARS MISSION SANDBOX:</strong><br>HRP Bio-Mathematical Projections</td>
+  </tr>
+  <tr>
+    <td><strong>3:20 – 3:45</strong></td>
+    <td><span class='badge badge-impact'>IMPACT</span></td>
+    <td>Mission Control Wall Display (<code>#view-mission-control</code>) showing fleet health and ticker.</td>
+    <td>Pan across 4-crew triage grid. Click astronaut avatar showing nominal status.</td>
+    <td><strong>THE IMPACT:</strong><br>Artemis Lunar Base & Ares IV Mars Transit</td>
+  </tr>
+  <tr>
+    <td><strong>3:45 – 4:00</strong></td>
+    <td><span class='badge badge-impact'>IMPACT</span></td>
+    <td>Hero 3D view with final logo, NASA Open Science acknowledgment, and Team Zero credits.</td>
+    <td>Slow cinematic zoom out of Mars transfer trajectory into deep space.</td>
+    <td><strong>AstraVital AI</strong><br>Protecting Human Life Beyond Earth</td>
+  </tr>
+</table>
+
+<h2>4. AUDIO, MUSIC & PRODUCTION RECOMMENDATIONS</h2>
+<ul>
+  <li><strong>Background Music:</strong> Ambient cinematic sci-fi soundtrack (e.g., Hans Zimmer / Interstellar style synth strings at 60–70 BPM). Keep music volume at 12–15% under narration so the presenter's voice is crisp and clear.</li>
+  <li><strong>Voiceover Delivery:</strong> Confident, articulate, pacing at ~118 words per minute. Warm and scientific. Use natural pauses after key hooks.</li>
+  <li><strong>Visual Transitions:</strong> 0.25-second clean cuts or subtle cross-dissolves. Avoid jarring spin or slide wipes.</li>
+  <li><strong>Resolution:</strong> 1080p (1920x1080) at 60 FPS. Fullscreen browser view (F11) with browser bookmarks hidden.</li>
+</ul>
+
+</body>
+</html>
+

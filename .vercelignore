@@ -2,9 +2,11 @@
 *.mkv
 *.mov
 *.avi
+astravital-ai-main Update/
+Recording*.mp4
 supabase/
 .env*
 .git
 .agents
-README.md
-DEPLOYMENT.md
+*.doc
+*.md

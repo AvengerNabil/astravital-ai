@@ -214,3 +214,72 @@ CREATE POLICY "Allow public read health metrics" ON health_metrics FOR SELECT US
 CREATE POLICY "Allow public insert health metrics" ON health_metrics FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public read alerts" ON alerts FOR SELECT USING (true);
 CREATE POLICY "Allow public read digital twins" ON digital_twins FOR SELECT USING (true);
+
+
+-- -----------------------------------------------------------------------------
+-- 14. NASA OSDR & GENELAB RESEARCH REPOSITORY
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS nasa_osdr_studies (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    study_id TEXT UNIQUE NOT NULL, -- e.g. 'OSD-379'
+    legacy_id TEXT, -- e.g. 'GLDS-379'
+    title TEXT NOT NULL,
+    organism TEXT NOT NULL,
+    mission_context TEXT NOT NULL,
+    spacecraft TEXT,
+    assay_type TEXT NOT NULL,
+    physiological_system TEXT NOT NULL,
+    description TEXT NOT NULL,
+    key_findings TEXT NOT NULL,
+    linked_indicators JSONB,
+    doi TEXT,
+    official_url TEXT NOT NULL,
+    data_classification TEXT NOT NULL DEFAULT 'REAL RESEARCH DATA',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- -----------------------------------------------------------------------------
+-- 15. NASA TECHNICAL REPORTS SERVER (NTRS) PUBLICATIONS
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS nasa_ntrs_publications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    report_id TEXT UNIQUE NOT NULL, -- e.g. 'NASA/SP-20205009772'
+    document_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    authors TEXT NOT NULL,
+    publication_date DATE NOT NULL,
+    category TEXT NOT NULL,
+    organization TEXT NOT NULL,
+    abstract TEXT NOT NULL,
+    key_points JSONB,
+    linked_indicators JSONB,
+    official_url TEXT NOT NULL,
+    data_classification TEXT NOT NULL DEFAULT 'REAL RESEARCH DATA',
+    citation TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- -----------------------------------------------------------------------------
+-- 16. DATA PROVENANCE REGISTRY & AUDIT
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS data_provenance_registry (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    parameter_key TEXT UNIQUE NOT NULL,
+    parameter_name TEXT NOT NULL,
+    classification TEXT NOT NULL CHECK (classification IN ('REAL_RESEARCH_DATA', 'SIMULATED_TELEMETRY', 'DERIVED_ANALYTICAL_DATA')),
+    unit TEXT,
+    nominal_baseline TEXT NOT NULL,
+    source_mechanism TEXT NOT NULL,
+    linked_research_ids JSONB,
+    scientific_limitations TEXT NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS & Policies for new tables
+ALTER TABLE nasa_osdr_studies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE nasa_ntrs_publications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE data_provenance_registry ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read osdr studies" ON nasa_osdr_studies FOR SELECT USING (true);
+CREATE POLICY "Allow public read ntrs publications" ON nasa_ntrs_publications FOR SELECT USING (true);
+CREATE POLICY "Allow public read provenance registry" ON data_provenance_registry FOR SELECT USING (true);

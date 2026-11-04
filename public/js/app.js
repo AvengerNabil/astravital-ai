@@ -1,6 +1,7 @@
 // ==============================================================================
 // AstraVital AI - Master Application Controller & Telemetry Event Stream Hub
 // NASA Space Apps Challenge 2026
+// Upgraded with NASA OSDR, GeneLab, NTRS Research & Telemetry Simulation Engine
 // ==============================================================================
 
 class AstraVitalApp {
@@ -21,9 +22,12 @@ class AstraVitalApp {
     this.missionControl = null;
     this.nasaCenter = null;
     this.astraAI = null;
+    this.researchManager = null;
+    this.telemetryEngine = null;
+    this.provenanceManager = null;
 
     // Cognitive Reaction Game State
-    this.reactionGameState = 'IDLE'; // IDLE, WAITING, READY
+    this.reactionGameState = 'IDLE';
     this.reactionStartTime = 0;
     this.reactionTimeout = null;
 
@@ -55,6 +59,21 @@ class AstraVitalApp {
       this.anomalyEngine = new AnomalyDetectionEngine();
     }
 
+    // Initialize NASA Research Manager (OSDR + NTRS)
+    if (window.NasaResearchManager) {
+      this.researchManager = new NasaResearchManager();
+    }
+
+    // Initialize Simulated Telemetry Engine
+    if (window.SimulatedTelemetryEngine) {
+      this.telemetryEngine = new SimulatedTelemetryEngine(this);
+    }
+
+    // Initialize Data Provenance Manager
+    if (window.DataProvenanceManager) {
+      this.provenanceManager = new DataProvenanceManager();
+    }
+
     // Initialize Wearable Simulator
     if (window.WearableSensorSimulator) {
       this.wearableSim = new WearableSensorSimulator('ecg-canvas');
@@ -70,7 +89,7 @@ class AstraVitalApp {
       this.missionControl = new MissionControlWall();
     }
 
-    // Initialize NASA Center
+    // Initialize NASA Center (Space Weather & APOD)
     if (window.NasaEnvironmentCenter) {
       this.nasaCenter = new NasaEnvironmentCenter();
     }
@@ -167,9 +186,22 @@ class AstraVitalApp {
       }, 50);
     }
 
-    // If Mission Control view is opened, refresh crew grid
+    // Refresh views if needed
     if (viewName === 'mission-control' && this.missionControl) {
       this.missionControl.renderCrewStatusGrid(this.astronauts);
+    }
+
+    if (viewName === 'osdr' && this.researchManager) {
+      this.researchManager.renderOsdrExplorer();
+    }
+
+    if (viewName === 'ntrs' && this.researchManager) {
+      this.researchManager.renderNtrsLibrary();
+    }
+
+    if (viewName === 'provenance' && this.provenanceManager) {
+      this.provenanceManager.renderCategoryCards();
+      this.provenanceManager.renderDictionaryTable();
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -188,7 +220,7 @@ class AstraVitalApp {
         roleBadge.innerText = this.currentRole.toUpperCase().replace('_', ' ');
       }
 
-      // Update role-based permissions display
+      // Update role-based selection
       if (this.currentRole === 'astronaut') {
         this.selectAstronaut('ast-001'); // CDR Sarah Vance
       } else if (this.currentRole === 'flight_surgeon') {
@@ -204,7 +236,7 @@ class AstraVitalApp {
       const json = await res.json();
       this.astronauts = json.data;
     } catch (e) {
-      // Fallback data
+      // Robust spaceflight fallback crew
       this.astronauts = [
         {
           id: 'ast-001',
@@ -221,12 +253,14 @@ class AstraVitalApp {
             bpDiastolic: 76,
             bodyTemp: 36.8,
             respirationRate: 14,
+            sleepDurationHours: 7.6,
             stressScore: 24,
             sleepQuality: 88,
             hydrationPct: 94.2,
             radiationDoseRateUsvH: 42.5,
             overallHealthScore: 94,
-            status: 'EXCELLENT'
+            status: 'EXCELLENT',
+            dataClassification: 'SIMULATED TELEMETRY'
           }
         },
         {
@@ -244,12 +278,14 @@ class AstraVitalApp {
             bpDiastolic: 88,
             bodyTemp: 37.4,
             respirationRate: 18,
+            sleepDurationHours: 5.8,
             stressScore: 68,
             sleepQuality: 61,
             hydrationPct: 88.0,
             radiationDoseRateUsvH: 49.2,
             overallHealthScore: 73,
-            status: 'WARNING'
+            status: 'WARNING',
+            dataClassification: 'SIMULATED TELEMETRY'
           }
         },
         {
@@ -267,12 +303,14 @@ class AstraVitalApp {
             bpDiastolic: 74,
             bodyTemp: 36.7,
             respirationRate: 13,
+            sleepDurationHours: 8.1,
             stressScore: 30,
             sleepQuality: 92,
             hydrationPct: 96.5,
             radiationDoseRateUsvH: 18.4,
             overallHealthScore: 96,
-            status: 'EXCELLENT'
+            status: 'EXCELLENT',
+            dataClassification: 'SIMULATED TELEMETRY'
           }
         },
         {
@@ -290,18 +328,20 @@ class AstraVitalApp {
             bpDiastolic: 80,
             bodyTemp: 36.9,
             respirationRate: 15,
+            sleepDurationHours: 6.9,
             stressScore: 42,
             sleepQuality: 78,
             hydrationPct: 91.2,
             radiationDoseRateUsvH: 12.8,
             overallHealthScore: 86,
-            status: 'GOOD'
+            status: 'GOOD',
+            dataClassification: 'SIMULATED TELEMETRY'
           }
         }
       ];
     }
 
-    this.currentAstronaut = this.astronauts[1]; // default to Dr. Thorne for interesting warning telemetry
+    this.currentAstronaut = this.astronauts[1]; // default to Dr. Thorne
     this.renderCrewSelector();
   }
 
@@ -350,7 +390,6 @@ class AstraVitalApp {
     const ast = this.currentAstronaut;
     const t = ast.telemetry;
 
-    // Update Vitals Cards
     const setTxt = (id, val) => {
       const el = document.getElementById(id);
       if (el) el.innerText = val;
@@ -360,6 +399,8 @@ class AstraVitalApp {
     setTxt('val-spo2', t.spo2);
     setTxt('val-blood-pressure', `${t.bpSystolic}/${t.bpDiastolic}`);
     setTxt('val-body-temp', t.bodyTemp);
+    setTxt('val-respiration', t.respirationRate || 15);
+    setTxt('val-sleep-duration', `${t.sleepDurationHours || 7.4} h`);
     setTxt('val-stress', t.stressScore);
     setTxt('val-sleep', t.sleepQuality);
     setTxt('val-hydration', t.hydrationPct);
@@ -376,6 +417,11 @@ class AstraVitalApp {
       const evalResult = this.anomalyEngine.evaluateTelemetry(ast);
       this.anomalyEngine.renderAnomalyBadges('anomaly-alerts-tray', evalResult);
     }
+
+    // Sync Digital Twin organ stress if visualizer active
+    if (this.digitalTwin3d) {
+      this.digitalTwin3d.updateTelemetry(t, ast.digitalTwin);
+    }
   }
 
   connectTelemetryStream() {
@@ -386,10 +432,16 @@ class AstraVitalApp {
         try {
           const packet = JSON.parse(event.data);
           if (packet.astronauts) {
+            // Respect pause state from simulation engine
+            if (this.telemetryEngine && this.telemetryEngine.isPaused) {
+              return;
+            }
+
             packet.astronauts.forEach(incoming => {
               const local = this.astronauts.find(a => a.id === incoming.id);
               if (local) {
                 local.telemetry = incoming.telemetry;
+                if (incoming.digitalTwin) local.digitalTwin = incoming.digitalTwin;
               }
             });
 
@@ -415,7 +467,6 @@ class AstraVitalApp {
       };
 
       this.eventSource.onerror = () => {
-        // SSE connection fallback to interval simulator
         this.eventSource.close();
         this.startFallbackTelemetryGenerator();
       };
@@ -426,6 +477,8 @@ class AstraVitalApp {
 
   startFallbackTelemetryGenerator() {
     setInterval(() => {
+      if (this.telemetryEngine && this.telemetryEngine.isPaused) return;
+
       this.astronauts.forEach(ast => {
         const delta = (Math.random() - 0.49) * 1.5;
         ast.telemetry.heartRate = Math.max(50, Math.min(125, Number((ast.telemetry.heartRate + delta).toFixed(1))));
@@ -444,7 +497,28 @@ class AstraVitalApp {
     }, 1500);
   }
 
-  // Cognitive Reaction Time Test Game (Psychomotor Vigilance Task)
+  // Research-to-Dashboard Connection
+  showResearchContext(metricKey, metricLabel, value, unit) {
+    if (this.researchManager) {
+      this.researchManager.showResearchModalForMetric(metricKey, metricLabel, value, unit);
+    }
+  }
+
+  showOrganResearchContext(organId) {
+    const organMetricMap = {
+      cardiac: { key: 'heartRate', label: 'Cardiovascular Spaceflight Remodeling', unit: 'BPM' },
+      brain: { key: 'bpSystolic', label: 'Cerebrovascular & SANS Edema', unit: 'mmHg' },
+      lungs: { key: 'spo2', label: 'Pulmonary Alveolar Gas Exchange', unit: '%' },
+      spine: { key: 'physicalActivity', label: 'Axial Spine & Musculoskeletal Deconditioning', unit: 'ARED Load' },
+      femur: { key: 'hydrationPct', label: 'Trabecular Bone Demineralization', unit: 'T-Score' }
+    };
+
+    const target = organMetricMap[organId] || organMetricMap.cardiac;
+    const currentVal = this.currentAstronaut ? this.currentAstronaut.telemetry[target.key] || 'Nominal' : 'Nominal';
+    this.showResearchContext(target.key, target.label, currentVal, target.unit);
+  }
+
+  // Cognitive Reaction Time Test Game (PVT-B)
   initCognitiveGame() {
     const gameBox = document.getElementById('cognitive-reaction-box');
     const msgEl = document.getElementById('cognitive-game-msg');
@@ -453,7 +527,6 @@ class AstraVitalApp {
 
     gameBox.addEventListener('click', () => {
       if (this.reactionGameState === 'IDLE') {
-        // Start waiting state
         this.reactionGameState = 'WAITING';
         gameBox.className = 'reaction-game-box waiting';
         if (msgEl) msgEl.innerText = 'WAIT FOR GREEN FLASH...';
@@ -469,7 +542,6 @@ class AstraVitalApp {
         }, delay);
 
       } else if (this.reactionGameState === 'WAITING') {
-        // Clicked too early
         clearTimeout(this.reactionTimeout);
         this.reactionGameState = 'IDLE';
         gameBox.className = 'reaction-game-box';
@@ -477,7 +549,6 @@ class AstraVitalApp {
         if (window.soundEngine) window.soundEngine.playWarningBeep();
 
       } else if (this.reactionGameState === 'READY') {
-        // Successful reaction
         const reactionTimeMs = Date.now() - this.reactionStartTime;
         this.reactionGameState = 'IDLE';
         gameBox.className = 'reaction-game-box';

@@ -1645,3 +1645,365 @@ html, body {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ==============================================================================
+   NASA Research Explorer, NTRS Library, & Provenance Architecture Styles
+   ============================================================================== */
+
+.research-card {
+  padding: 1.5rem;
+  background: rgba(11, 16, 38, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: var(--panel-radius);
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.research-card:hover {
+  border-color: rgba(0, 229, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.12);
+}
+
+.badge-research-id {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.badge-subtle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #8E9DB8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.meta-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: #CBD5E1;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.research-key-finding-box {
+  background: rgba(0, 229, 255, 0.06);
+  border-left: 3px solid var(--accent-cyan);
+  padding: 0.75rem 0.9rem;
+  border-radius: 0 6px 6px 0;
+  margin-top: 0.6rem;
+}
+
+.btn-research-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-research-link:hover {
+  background: var(--accent-cyan);
+  color: #050816;
+  box-shadow: 0 0 14px var(--accent-cyan-glow);
+}
+
+/* Provenance Badges */
+.badge-real-research,
+.badge-provenance-real {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: bold;
+  padding: 0.25rem 0.6rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-simulated-telemetry {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: bold;
+  padding: 0.25rem 0.6rem;
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-derived-analytics {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: bold;
+  padding: 0.25rem 0.6rem;
+  background: rgba(139, 92, 246, 0.15);
+  color: #8B5CF6;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Simulation Banner & Dot */
+.sim-banner-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.76rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #FBBF24;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.sim-dot {
+  width: 8px;
+  height: 8px;
+  background: #F59E0B;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #F59E0B;
+  animation: pulseSimDot 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseSimDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Simulation Control Bar */
+.sim-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: rgba(11, 16, 38, 0.9);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: var(--panel-radius);
+  margin-bottom: 1.5rem;
+}
+
+.sim-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.sim-btn {
+  padding: 0.5rem 0.9rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #546481;
+  background: #0B1220;
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+.sim-btn:hover:not(:disabled) {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 229, 255, 0.15);
+  color: var(--accent-cyan);
+}
+
+.sim-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sim-btn-danger:hover:not(:disabled) {
+  border-color: var(--danger-red);
+  background: rgba(255, 77, 109, 0.15);
+  color: var(--danger-red);
+}
+
+.status-pill {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.status-pill.live {
+  background: rgba(0, 255, 153, 0.15);
+  color: var(--success-green);
+  border: 1px solid rgba(0, 255, 153, 0.4);
+}
+
+.status-pill.paused {
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+/* Filter Bar */
+.filter-tray {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.filter-btn {
+  padding: 0.45rem 0.9rem;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8E9DB8;
+  border-radius: 6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--accent-cyan);
+  color: #fff;
+}
+
+/* Provenance Matrix Table */
+.prov-table-container {
+  overflow-x: auto;
+  border-radius: var(--panel-radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prov-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.prov-table th {
+  background: rgba(11, 16, 38, 0.95);
+  padding: 1rem 0.85rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.prov-table td {
+  padding: 0.9rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: top;
+}
+
+.prov-table tr:hover td {
+  background: rgba(0, 229, 255, 0.03);
+}
+
+/* Research Context Modal */
+.rc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 22, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.rc-modal-backdrop.active {
+  display: flex;
+}
+
+.rc-modal-box {
+  background: #0B1026;
+  border: 1px solid var(--accent-cyan);
+  box-shadow: 0 0 35px rgba(0, 229, 255, 0.25);
+  border-radius: var(--panel-radius);
+  width: 100%;
+  max-width: 850px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+  animation: fadeInView 0.25s ease-out;
+}
+
+.rc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.rc-modal-close {
+  background: none;
+  border: none;
+  color: #8E9DB8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.rc-modal-close:hover {
+  color: #fff;
+}
+
+.rc-item {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.metric-card-interactive {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.metric-card-interactive:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 16px rgba(0, 229, 255, 0.15);
+  transform: translateY(-2px);
+}
