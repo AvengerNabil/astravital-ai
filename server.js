@@ -22,6 +22,20 @@ const NASA_API_KEY = process.env.NASA_API_KEY || 'DEMO_KEY';
 
 app.use(cors());
 app.use(express.json());
+
+// PWA Service Worker & Web Manifest headers
+app.get('/sw.js', (req, res) => {
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Content-Type', 'application/javascript');
+  res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+});
+
+app.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'public', 'manifest.json'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Simulation Engine State

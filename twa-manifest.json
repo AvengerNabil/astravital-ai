@@ -1,0 +1,49 @@
+{
+  "packageId": "com.teamzero.astravital",
+  "host": "astravital-ai.vercel.app",
+  "name": "AstraVital AI - Astronaut Health & Digital Twin",
+  "launcherName": "AstraVital",
+  "themeColor": "#060A12",
+  "navigationColor": "#030712",
+  "backgroundColor": "#030712",
+  "enableNotifications": true,
+  "startUrl": "/?source=twa",
+  "iconUrl": "https://astravital-ai.vercel.app/icons/icon-512x512.png",
+  "maskableIconUrl": "https://astravital-ai.vercel.app/icons/icon-512x512-maskable.png",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Mission Dashboard",
+      "shortName": "Dashboard",
+      "url": "https://astravital-ai.vercel.app/?view=dashboard",
+      "chosenIconUrl": "https://astravital-ai.vercel.app/icons/icon-192x192.png"
+    },
+    {
+      "name": "Astronaut Digital Twin",
+      "shortName": "Digital Twin",
+      "url": "https://astravital-ai.vercel.app/?view=digital-twin",
+      "chosenIconUrl": "https://astravital-ai.vercel.app/icons/icon-192x192.png"
+    },
+    {
+      "name": "AI Health Analytics",
+      "shortName": "AI Analytics",
+      "url": "https://astravital-ai.vercel.app/?view=astra-ai",
+      "chosenIconUrl": "https://astravital-ai.vercel.app/icons/icon-192x192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://astravital-ai.vercel.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  }
+}

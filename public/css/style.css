@@ -2583,3 +2583,87 @@ html, body {
   box-shadow: 0 4px 16px rgba(0, 229, 255, 0.15);
   transform: translateY(-2px);
 }
+
+/* ==============================================================================
+   PROGRESSIVE WEB APP (PWA) & MOBILE ENHANCEMENTS
+   ============================================================================== */
+.btn-pwa-install {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 102, 255, 0.2));
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.15);
+}
+
+.btn-pwa-install:hover {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(0, 102, 255, 0.35));
+  border-color: #00e5ff;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.drawer-footer .btn-pwa-install {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Offline / Online Notification Toast */
+.pwa-offline-toast {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(11, 20, 38, 0.95);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.2);
+  border-radius: 30px;
+  padding: 0.6rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: #fff;
+  z-index: 99999;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.pwa-offline-toast.visible {
+  bottom: 24px;
+}
+
+.pwa-offline-toast.offline {
+  border-color: rgba(255, 170, 0, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 170, 0, 0.3);
+  color: #ffcc00;
+}
+
+.pwa-offline-toast.online {
+  border-color: rgba(0, 255, 136, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 136, 0.3);
+  color: #00ff88;
+}
+
+/* Standalone PWA Notch & Safe Area Support */
+body.pwa-standalone {
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+

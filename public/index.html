@@ -2,10 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="description" content="AstraVital AI - Intelligent Astronaut Health Monitoring & Digital Twin Platform for NASA Space Apps Challenge 2026. Real-time biometrics, authentic NASA OSDR & NTRS research data, 3D Digital Twin, Mars simulation, and AI clinical support.">
-  <meta name="keywords" content="NASA Space Apps, Astronaut Health, Digital Twin, Space Medicine, OSDR, GeneLab, NTRS, Mars Mission, Biometric Telemetry, Three.js">
+  <meta name="keywords" content="NASA Space Apps, Astronaut Health, Digital Twin, Space Medicine, OSDR, GeneLab, NTRS, Mars Mission, Biometric Telemetry, Three.js, PWA">
   <title>AstraVital AI | NASA Astronaut Health & Digital Twin Platform</title>
+
+  <!-- PWA & Mobile Web App Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#060a12">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AstraVital AI">
+  <meta name="application-name" content="AstraVital AI">
+  <meta name="msapplication-TileColor" content="#060a12">
+  <meta name="msapplication-TileImage" content="/icons/icon-192x192.png">
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/icons/favicon-64x64.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -75,6 +93,12 @@
       <!-- Audio Synthesizer Toggle -->
       <button id="btn-audio-toggle" class="audio-toggle-btn active" title="Toggle Telemetry Audio Synthesizer">
         🔊
+      </button>
+
+      <!-- PWA Install Button (Appears when installable) -->
+      <button id="btn-header-pwa-install" class="btn-pwa-install" style="display:none;" title="Install AstraVital App">
+        <span>📲</span>
+        <span>INSTALL APP</span>
       </button>
 
       <!-- Emergency Red Alert Trigger Button -->
@@ -270,6 +294,10 @@
 
     <!-- Drawer Footer -->
     <div class="drawer-footer font-mono">
+      <button id="btn-drawer-pwa-install" class="btn-pwa-install" style="display:none;" title="Install AstraVital AI as native App">
+        <span>📲</span>
+        <span>INSTALL ASTRAVITAL APP</span>
+      </button>
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:0.72rem; color:#8E9DB8;">AstraVital OS v4.2 • Sol 142</span>
         <span style="color:var(--success-green); font-size:0.72rem;">● SYSTEM ONLINE</span>
@@ -1983,6 +2011,7 @@
   <script src="js/data-provenance.js"></script>
   <script src="js/mission-control.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/pwa.js"></script>
 
 </body>
 </html>

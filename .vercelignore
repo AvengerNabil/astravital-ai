@@ -10,3 +10,7 @@ supabase/
 .agents
 *.doc
 *.md
+android/
+.github/
+capacitor.config.json
+twa-manifest.json

@@ -1,0 +1,20 @@
+{
+  "appId": "com.teamzero.astravital",
+  "appName": "AstraVital AI",
+  "webDir": "public",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": [
+      "astravital-ai.vercel.app",
+      "*.vercel.app",
+      "api.nasa.gov",
+      "osdr.nasa.gov",
+      "ntrs.nasa.gov"
+    ]
+  },
+  "android": {
+    "backgroundColor": "#030712",
+    "allowMixedContent": true
+  }
+}
