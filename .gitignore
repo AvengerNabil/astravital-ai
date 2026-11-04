@@ -7,3 +7,6 @@ node_modules/
 astravital-ai-main Update/
 Recording*.mp4
 .vercel/
+*.zip
+AstraVital-AI.apk
+apk-release/

@@ -41,3 +41,4 @@
   <!-- Orbiting Satellite -->
   <circle cx="395" cy="165" r="9" fill="#ffd700" filter="url(#neonGlow)"/>
 </svg>
+

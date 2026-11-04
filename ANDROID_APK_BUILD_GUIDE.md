@@ -86,3 +86,4 @@ You can generate a signed or unsigned Android package (APK & AAB) instantly thro
 | **Display Mode** | `standalone` |
 | **Service Worker** | `public/sw.js` (Offline Telemetry & Stale-While-Revalidate) |
 | **Android Framework** | Capacitor v7 + Trusted Web Activity (TWA) ready |
+
